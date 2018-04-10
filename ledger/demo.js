@@ -35,6 +35,7 @@ app.config(function($routeProvider) {
   $routeProvider.when('/debts', {templateUrl: 'debts.html', reloadOnSearch: false});
   $routeProvider.when('/claims', {templateUrl: 'claims.html', reloadOnSearch: false});
   $routeProvider.when('/forms', {templateUrl: 'forms.html', reloadOnSearch: false});
+  $routeProvider.when('/login', {templateUrl: 'login.html', reloadOnSearch: false});
 });
 
 //
@@ -343,3 +344,17 @@ app.controller('MainController', function($rootScope, $scope) {
     }
   };
 });
+
+
+//added by me
+/*
+app.run(function ($rootScope, $state, AuthService) {
+    $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
+      if (toState.authenticate && !AuthService.isAuthenticated()){
+        // User isn’t authenticated
+        $state.transitionTo("forms");
+        event.preventDefault();
+      }
+    });
+  });
+*/

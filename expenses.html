@@ -1,0 +1,104 @@
+<div ui-content-for="title">
+  <span>Expenses</span>
+</div>
+
+<div class="scrollable site-body">
+<div class="scrollable-content">
+
+  <!-- tabs -->
+  <div ui-state="activeTab" default="1">
+    <div class="btn-group justified nav-tabs heading-tabs">
+      <a ui-set="{'activeTab': 1}"
+          ui-class="{'active': activeTab == 1}" class="btn btn-default left">Add</a>
+
+      <a ui-set="{'activeTab': 2}"
+          ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
+    </div>
+
+
+    <!-- form -->
+    <div ui-if="activeTab == 1" class="tab-content">
+    <div class="section">
+
+      <form role="form" ng-submit='login()'>
+        <fieldset>
+          <legend>Add expense</legend>
+
+          <table width="100%" class="addNumTypeTable">
+            <tr>
+              <td>
+                <div class="form-grouphas-success has-feedback">
+                  <label for="addExpense-cost">Cost</label>
+                  <input id="addExpense-cost"
+                         type="number"
+                         ng-model="number"
+                         class="form-control"
+                         placeholder="Enter cost">
+                </div>
+              </td>
+              <td>
+                <div class="form-group">
+                  <label for="addExpense-type">Type</label>
+                  <select id="addExpense-type" class="form-control">
+                    <option>other</option>
+                    <option>shit</option>
+                    <option>random</option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+            <div class="form-group">
+              <label for="addExpense-description">Description</label>
+              <textarea id="addExpense-description" class="form-control" rows="4"></textarea>
+            </div>
+
+
+            <table width="100%" class="addDateLocationTable">
+              <tr>
+                <td>
+                  <div class="form-group">
+                    <label>Date</label>
+                    <input id="addExpense-cost"
+                           type="date"
+                           ng-model="number"
+                           class="form-control">
+                  </div>
+               </td>
+               <td width="70">
+                <div class="form-group">
+                  <label>Location</label>
+                  <ui-switch
+                    ng-model="rememberMe"></ui-switch>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+        </fieldset>
+        <hr class="cshr">
+
+        <button class="btn btn-primary btn-block">
+          Add
+        </button>
+
+        <div ui-content-for="navbarAction">
+          <a class="btn" ng-click="login()">Login</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- listing -->
+  <div ui-if="activeTab == 2">
+    <div class="scrollable-content section">
+      <h3 class="page-header">Tab 2</h3>
+      <p><!-- ... --></p>
+  </div>
+  </div>
+
+</div>
+</div>
+</div>

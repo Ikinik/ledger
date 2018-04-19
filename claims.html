@@ -1,0 +1,117 @@
+<div ui-content-for="title">
+  <span>Claims</span>
+</div>
+
+<div class="scrollable site-body">
+<div class="scrollable-content">
+
+  <!-- tabs -->
+  <div ui-state="activeTab" default="1">
+    <div class="btn-group justified nav-tabs heading-tabs">
+      <a ui-set="{'activeTab': 1}"
+          ui-class="{'active': activeTab == 1}" class="btn btn-default left">Add</a>
+
+      <a ui-set="{'activeTab': 2}"
+          ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
+    </div>
+
+    <!-- form -->
+    <div ui-if="activeTab == 1" class="tab-content">
+    <div class="section">
+      <form role="form" ng-submit='login()'>
+        <fieldset>
+          <legend>Add claim</legend>
+
+          <table width="100%" class="addNumTypeTable">
+            <tr>
+              <td>
+                <div class="form-grouphas-success has-feedback">
+                  <label for="addClaim-sum">Sum</label>
+                  <input id="addClaim-sum"
+                         type="number"
+                         ng-model="number"
+                         class="form-control"
+                         placeholder="Enter cost">
+                </div>
+              </td>
+              <td>
+                <div class="form-group">
+                  <label for="addClaim-type">Type</label>
+                  <select id="addClaim-type" class="form-control">
+                    <option>other</option>
+                    <option>shit</option>
+                    <option>random</option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+            <div class="form-group">
+              <label for="addIncome-description">Description</label>
+              <textarea id="addIncome-description" class="form-control" rows="4"></textarea>
+            </div>
+
+            <!-- more  -->
+            <div class="panel-group" ui-shared-state="myAccordion">
+
+              <div class="panel-more">
+                <div class="panel-heading" ui-toggle="myAccordion">
+                  <h4 class="panel-title button">
+                      <span ui-if="!myAccordion">more</span>
+                      <span ui-if="myAccordion">less</span>
+                  </h4>
+                </div>
+
+                <div ui-if="myAccordion">
+                  <div class="panel-body">
+
+                    <div class="form-group">
+                      <label for="addClaim-Issueddate">Date of Issue</label>
+                      <input id="addClaim-Issueddate"
+                             type="date"
+                             ng-model="number"
+                             class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="addClaim-dueDate">Due date</label>
+                      <input id="addClaim-dueDate"
+                             type="date"
+                             ng-model="number"
+                             class="form-control">
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!-- /more  -->
+
+        </fieldset>
+        <hr class="cshr">
+
+        <button class="btn btn-primary btn-block">
+          Add
+        </button>
+
+        <div ui-content-for="navbarAction">
+          <a class="btn" ng-click="login()">Login</a>
+        </div>
+
+      </form>
+    </div>
+    </div>
+
+    <!-- listing -->
+    <div ui-if="activeTab == 2">
+      <div class="scrollable-content section">
+        <h3 class="page-header">Tab 2</h3>
+        <p><!-- ... --></p>
+    </div>
+    </div>
+
+  </div>
+</div>
+</div>

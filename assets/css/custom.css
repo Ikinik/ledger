@@ -1,0 +1,34 @@
+.scrollable.site-body {background-color: white}
+hr.cshr {margin-top: 0px}
+
+.addNumTypeTable tr td:first-of-type {padding-right: 5px}
+.addDateLocationTable tr td:first-of-type {padding-right: 10px}
+
+.panel-more .panel-heading {
+    text-align: center; background: url('../img/line-bg.png') left center repeat-x;
+    border: none; outline: none
+}
+
+.panel-more .panel-heading .panel-title {
+    display: table; margin: 0px auto; padding: 4px 10px 4px 10px; margin-top: 0px; outline: 10px solid white;
+    border: 1px solid #c6c6c6; background-color: rgb(247, 247, 247); border-radius: 3px
+}
+
+.heading-tabs {background-color: orange; border: 0px; padding: 0px}
+.heading-tabs a.left, .heading-tabs a.right {border-top: none}
+.heading-tabs a.left {border-radius: 0px; border-left: none}
+.heading-tabs a.right {border-radius: 0px; border-right: none}
+
+.tab-content .section {padding-top: 1.5em}
+
+/* form controls */
+.has-success .form-control {border-color: #ccc}
+
+input.ng-dirty.ng-invalid {border-color: #fc0}
+input.ng-dirty.ng-valid {border-color: orange}
+
+/*form error message*/
+
+form table.title-table {width: 100%}
+form table.title-table tr td:last-child {text-align: right}
+form table.title-table tr td:last-child span.error-message {padding-left: 20px; font-size: 14px; margin-top: -5px; color: #e23d55}

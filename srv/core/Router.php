@@ -1,6 +1,7 @@
 <?php
 namespace app\ledger\core;
 use app\ledger\core\Route;
+use app\ledger\core\ctrl\AbstractBaseCtrl;
 
 class Router {
   private static $instance = false;
@@ -9,8 +10,9 @@ class Router {
   private $post = [];
 
   private function __construct(){
-    $this->routes['/'] = 'loginCtrl';
-    $this->routes['login'] = 'loginCtrl';
+    $this->routes['/'] = 'LoginCtrl';
+    $this->routes['login'] = 'LoginCtrl';
+    $this->routes['expenses'] = 'ExpensesFromCtrl';
   }
 
   public static function getInstance(){
@@ -47,35 +49,49 @@ class Router {
 
   public static function parseQueryPostArray($requestParams = NULL){
 
-    if()
+    if($requestParams == NULL){
+        $requestParams = file_get_contents('php://input');
+    }
 
-    file_get_contents('php://input')
-
-    $params = json_decode(file_get_contents('php://input'), true);
-    return $params;
+    if($params = json_decode($requestParams, true)){
+        return $params;
+    }else{
+      return [];
+    }
   }
 
   public function routeDefault(){
     if($queryArray = $this::parseQueryGetArray($_SERVER['QUERY_STRING'])){
 
+      $requri = $queryArray['requri'];
       unset($queryArray['requri']);
-      $this->$get = $queryArray;
-      $this->$post = $this->parseQueryPostArray();
+      $this->get = $queryArray;
+      $this->post = $this->parseQueryPostArray();
 
-      $this->route($queryArray['requri'], $this->$get, $this->$post);
+      if(!($result = $this->route($requri, $this->get, $this->post))){
+        http_response_code(400); //bad request
+        die();
+      }
+
+      return $result;
     }else{
       http_response_code(400); //bad request
       die();
     }
   }
 
-  public function route($request, $get, $post){
+  public function route($request, array $get, array $post){
 
-    if(isset($routes[$request])){
-      $controllerName = $routes[$request];
+    if(isset($this->routes[$request])){
+      $controllerName = $this->routes[$request];
       $className = "\\app\\ledger\\ctrl\\" . $controllerName;
       $controler = new $className($get, $post);
-      $controler->execute();
+
+      if($controler instanceof AbstractBaseCtrl){
+            return $controler->execute();
+      }else{
+        return false;
+      }
 
       return true;
     }else{

@@ -350,7 +350,7 @@ app.controller('MainController', function($rootScope, $scope) {
 app.controller('loginCtrl', function($scope, $http){
   $scope.login = function(){
       //window.alert("user: " + $scope.email + " " + $scope.password + " " + $scope.rememberMe);
-      $http.post('srv/loader.php?requri=login', {'email': $scope.email, 'pass': $scope.pass})
+      $http.post('srv/login.php', {'email': $scope.email, 'pass': $scope.pass})
            .then(function successfulLogin(response){
              console.log(response);
            }, function failedLogin(response){

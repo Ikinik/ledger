@@ -8,6 +8,7 @@
 //
 var app = angular.module('MobileAngularUiExamples', [
   'ngRoute',
+  'ngCookies',
   'mobile-angular-ui',
 
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'.
@@ -250,7 +251,7 @@ app.directive('dragMe', ['$drag', function($drag) {
 // For this trivial demo we have just a unique MainController
 // for everything
 //
-app.controller('MainController', function($rootScope, $scope) {
+app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieStore', function($rootScope, $scope, $cookies, $cookieStore) {
 
   $scope.swiped = function(direction) {
     alert('Swiped ' + direction);
@@ -262,6 +263,11 @@ app.controller('MainController', function($rootScope, $scope) {
   // Needed for the loading screen
   $rootScope.$on('$routeChangeStart', function() {
     $rootScope.loading = true;
+
+    // if user is not looget, redirect him to the login page
+    if($cookies.get('logged') != 1){
+      window.location = './#/login';
+    }
   });
 
   $rootScope.$on('$routeChangeSuccess', function() {
@@ -343,7 +349,7 @@ app.controller('MainController', function($rootScope, $scope) {
       $scope.notices.splice(index, 1);
     }
   };
-});
+}]);
 
 
 //added by me
@@ -353,9 +359,21 @@ app.controller('loginCtrl', function($scope, $http){
       $http.post('srv/loader.php?requri=login', {'email': $scope.email, 'pass': $scope.pass})
            .then(function successfulLogin(response){
              console.log(response);
+             window.location = './#/';
+
            }, function failedLogin(response){
              console.log('Unauthorized');
            });
+  };
+});
+
+app.controller('addExpenseCtrl', function($scope, $http){
+  $scope.addExpense = function(){
+    console.log($scope.cost);
+    console.log($scope.type);
+    console.log($scope.description);
+    console.log($scope.getLocation);
+
   };
 
 

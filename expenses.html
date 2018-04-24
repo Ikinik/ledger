@@ -18,9 +18,9 @@
 
     <!-- form -->
     <div ui-if="activeTab == 1" class="tab-content">
-    <div class="section">
+    <div class="section" ng-controller="addExpenseCtrl">
 
-      <form role="form" ng-submit='login()'>
+      <form role="form" name="addExpenseForm" ng-submit='addExpense()'>
         <fieldset>
           <legend>Add expense</legend>
 
@@ -31,15 +31,21 @@
                   <label for="addExpense-cost">Cost</label>
                   <input id="addExpense-cost"
                          type="number"
-                         ng-model="number"
+                         name="cost"
+                         ng-model="cost"
                          class="form-control"
-                         placeholder="Enter cost">
+                         placeholder="Enter cost"
+                         required>
                 </div>
               </td>
               <td>
                 <div class="form-group">
                   <label for="addExpense-type">Type</label>
-                  <select id="addExpense-type" class="form-control">
+                  <select id="addExpense-type"
+                          name="type"
+                          ng-model="type"
+                          class="form-control"
+                          required>
                     <option>other</option>
                     <option>shit</option>
                     <option>random</option>
@@ -51,7 +57,12 @@
 
             <div class="form-group">
               <label for="addExpense-description">Description</label>
-              <textarea id="addExpense-description" class="form-control" rows="4"></textarea>
+              <textarea id="addExpense-description"
+                        name="description"
+                        ng-model="description"
+                        class="form-control"
+                        rows="4">
+              </textarea>
             </div>
 
 
@@ -62,15 +73,15 @@
                     <label>Date</label>
                     <input id="addExpense-cost"
                            type="date"
-                           ng-model="number"
+                           name="date"
+                           ng-model="date"
                            class="form-control">
                   </div>
                </td>
                <td width="70">
                 <div class="form-group">
                   <label>Location</label>
-                  <ui-switch
-                    ng-model="rememberMe"></ui-switch>
+                  <ui-switch ng-model="getLocation"></ui-switch>
                 </div>
               </td>
             </tr>

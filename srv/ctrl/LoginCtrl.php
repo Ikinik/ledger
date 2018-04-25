@@ -1,6 +1,7 @@
 <?php
 namespace app\ledger\ctrl;
 use app\ledger\core\ctrl\AbstractBaseCtrl;
+use app\ledger\model\DBModel;
 
 class LoginCtrl extends AbstractBaseCtrl {
 
@@ -9,8 +10,9 @@ class LoginCtrl extends AbstractBaseCtrl {
 
   public function __construct(array $get = [], array $post = []){
     parent::__construct($get, $post);
-
     //$post = ["email" => "adam.sorfa@gmail.com", "pass" => "password"];
+    //$post = $get;
+
 
     try {
       if(!isset($post['email']) || !isset($post['pass'])){
@@ -32,8 +34,10 @@ class LoginCtrl extends AbstractBaseCtrl {
 
 
   public function execute(){
+
     //verify credentials
-    if(!(($this->email == "adam.sorfa@gmail.com") && ($this->pass == 'password'))){
+    $db = DBModel::getInstance();
+    if(!($userID = $db->verifyUser($this->email, $this->pass))){
       http_response_code(403); //forbiden
       die();
     }
@@ -46,7 +50,7 @@ class LoginCtrl extends AbstractBaseCtrl {
     session_start();
     session_regenerate_id();
 
-    $_SESSION['user_id'] = '1234';
+    $_SESSION['user_id'] = $userID;
     setcookie('logged', true, 0, '/');
 
     return ['logged' => true];

@@ -9,7 +9,7 @@ spl_autoload_register(function ($className){
   $namespace = explode('\\', $className);
   if((count($namespace) > 2) && ($namespace[0] == "app") && ($namespace[1] == "ledger")){
     $namespace = array_slice($namespace, 2);
-    $path =  CONFIG::$APP_DIR . implode(DIRECTORY_SEPARATOR, $namespace) . '.php';
+    $path =  CONFIG::APP_DIR . implode(DIRECTORY_SEPARATOR, $namespace) . '.php';
 
     include_once($path);
     return true;

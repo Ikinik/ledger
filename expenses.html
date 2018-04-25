@@ -45,10 +45,7 @@
                           name="type"
                           ng-model="type"
                           class="form-control"
-                          required>
-                    <option>other</option>
-                    <option>shit</option>
-                    <option>random</option>
+                          ng-options="x.name for x in types">
                   </select>
                 </div>
               </td>

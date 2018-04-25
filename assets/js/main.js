@@ -253,6 +253,8 @@ app.directive('dragMe', ['$drag', function($drag) {
 //
 app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieStore', function($rootScope, $scope, $cookies, $cookieStore) {
 
+  $rootScope.user = {'email': null};
+
   $scope.swiped = function(direction) {
     alert('Swiped ' + direction);
   };
@@ -353,12 +355,12 @@ app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieSto
 
 
 //added by me
-app.controller('loginCtrl', function($scope, $http){
+app.controller('loginCtrl', function($rootScope, $scope, $http){
   $scope.login = function(){
       //window.alert("user: " + $scope.email + " " + $scope.password + " " + $scope.rememberMe);
       $http.post('srv/loader.php?requri=login', {'email': $scope.email, 'pass': $scope.pass})
            .then(function successfulLogin(response){
-             console.log(response);
+             $rootScope.user = {'email': $scope.email}
              window.location = './#/';
 
            }, function failedLogin(response){
@@ -368,6 +370,15 @@ app.controller('loginCtrl', function($scope, $http){
 });
 
 app.controller('addExpenseCtrl', function($scope, $http){
+
+  $http.get('srv/loader.php?requri=expenses&types')
+       .then(function successfullRequest(response){
+         $scope.types = response.data;
+         $scope.type = $scope.types[0];
+       },function failedRequest(response){
+         console.log('types load failed');
+       });
+
   $scope.addExpense = function(){
     console.log($scope.cost);
     console.log($scope.type);

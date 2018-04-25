@@ -2,11 +2,11 @@
 namespace app\ledger\core;
 
 final class CONFIG {
-  public static $APP_DIR            = '/var/www/html/srv/';
-  public static $APP_URL_PREFIX     = '/ledger/srv/';
-  public static $MYSQL_PASS         = '';
-  public static $MYSQL_USER         = '';
-  public static $MYSQL_HOST         = '';
-  public static $MYSQL_DB           = '';
-  public static $MYSQL_TABLE_PREFX  = '';
+  const APP_DIR            = '/var/www/html/srv/';
+  const APP_URL_PREFIX     = '/ledger/srv/';
+  const MYSQL_PASS         = '0018999881953';
+  const MYSQL_USER         = 'root';
+  const MYSQL_HOST         = 'localhost';
+  const MYSQL_DB           = 'ledger';
+  const MYSQL_TABLE_PREFX  = '';
 }

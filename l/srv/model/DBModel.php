@@ -71,7 +71,7 @@ class DBModel {
                               WHERE types_moves.move_id = ? AND types.user_id = ? AND types.id = ?
                               LIMIT 1");
     $st->execute([$moveID, $userID, $typeID]);
-    if($st->rowCount() == 1){
+    if($st->rowCount() = 1){
       return true;
     }else{
       return false;
@@ -94,7 +94,7 @@ class DBModel {
     return true;
   }
 
-  public function insertExpenseWithPoint(int $cost, int $type, string $description, int $date, float $lat, float $long, float $alt){
+  public function insertExpense(int $cost, int $type, string $description, int $date, float $lat, float $long, float $alt){
     $stp = $this->db->prepare("INSERT INTO points (`lat`, `long`, `alt`)
                                VALUES (?,?,?)");
 
@@ -104,7 +104,7 @@ class DBModel {
     try {
       $this->db->beginTransaction();
 
-      $stp->execute([$lat, $long, $alt]);
+      $stp->execute([$lat, $long, $alt]);                           
       $pointID = $stp->lastInsertId();
       $st->execute([$cost,
                     $type,

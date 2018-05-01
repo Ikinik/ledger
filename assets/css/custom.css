@@ -32,3 +32,7 @@ input.ng-dirty.ng-valid {border-color: orange}
 form table.title-table {width: 100%}
 form table.title-table tr td:last-child {text-align: right}
 form table.title-table tr td:last-child span.error-message {padding-left: 20px; font-size: 14px; margin-top: -5px; color: #e23d55}
+
+form table .multiselect-parent, form table .multiselect-parent .dropdown-toggle { width: 100% }
+form table .multiselect-parent ul.dropdown-menu { min-width: 100%; max-width: 100%; width: 100% }
+form table .multiselect-parent ul.dropdown-menu li, form table .multiselect-parent ul.dropdown-menu li a {text-overflow: ellipsis}

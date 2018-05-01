@@ -41,13 +41,12 @@
               <td>
                 <div class="form-group">
                   <label for="addExpense-type">Type</label>
-
-                <div ng-dropdown-multiselect=""
-                     id="multiselect"
-                     options="example1data"
-                     selected-model="example1model"
-                     extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false}"></div>
-
+                  <select id="addExpense-type"
+                          name="type"
+                          ng-model="type"
+                          class="form-control"
+                          ng-options="x.name for x in types">
+                  </select>
                 </div>
               </td>
             </tr>

@@ -10,6 +10,7 @@ var app = angular.module('MobileAngularUiExamples', [
   'ngRoute',
   'ngCookies',
   'mobile-angular-ui',
+  'angularjs-dropdown-multiselect',
 
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'.
   // This is intended to provide a flexible, integrated and and
@@ -365,11 +366,17 @@ app.controller('loginCtrl', function($rootScope, $scope, $http){
 
            }, function failedLogin(response){
              console.log('Unauthorized');
+             console.log(response);
            });
   };
 });
 
 app.controller('addExpenseCtrl', function($scope, $http){
+
+  $scope.example1model = [];
+  $scope.example1data = [ {id: 1, label: "David"}, {id: 2, label: "Jhon"}, {id: 3, label: "Danny"} ];
+
+
 
   $http.get('srv/loader.php?requri=expenses&types')
        .then(function successfullRequest(response){
@@ -380,11 +387,43 @@ app.controller('addExpenseCtrl', function($scope, $http){
        });
 
   $scope.addExpense = function(){
-    console.log($scope.cost);
-    console.log($scope.type);
-    console.log($scope.description);
-    console.log($scope.getLocation);
+    function postExpenseData(data){
+      var date = new Date(data.date);
+      data.date = date.getTime();
 
+      $http.post('srv/loader.php.?requri=expenses', data)
+           .then(function(response){
+             //sucess
+             console.log(response);
+           },function(){
+             //fail
+           });
+    }
+
+    if($scope.getLocation){
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(position){
+          postExpenseData({
+            'cost': $scope.cost,
+            'type': $scope.type,
+            'description': $scope.description,
+            'date': $scope.date,
+            'location': {
+                'latitude': position.coords.latitude,
+                'longitude': position.coords.longitude,
+                'altitude': position.coords.altitude
+            }
+          });
+        });
+      }
+    }else{
+      postExpenseData({
+        'cost': $scope.cost,
+        'type': $scope.type,
+        'description': $scope.description,
+        'date': $scope.date
+      });
+    }
   };
 
 

@@ -21,6 +21,24 @@ hr.cshr {margin-top: 0px}
 
 .tab-content .section {padding-top: 1.5em}
 
+#info-box {overflow-y: hidden;
+           max-height: 0px;
+
+           transition-property: all;
+	         transition-duration: 1.5s;
+           transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+
+           font-size: 13px;
+           text-align: center;
+           color: #fff;
+           background-color: green;
+}
+
+#info-box span {margin: 2px;}
+#info-box.visible {max-height: 20px}
+#info-box.error {background-color: #EA4335}
+#info-box.success {background-color: #7CBB00}
+
 /* form controls */
 .has-success .form-control {border-color: #ccc}
 

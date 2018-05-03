@@ -255,6 +255,7 @@ app.directive('dragMe', ['$drag', function($drag) {
 app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieStore', function($rootScope, $scope, $cookies, $cookieStore) {
 
   $rootScope.user = {'email': null};
+  $rootScope.infoBox = {visible: false, success: true};
 
   $scope.swiped = function(direction) {
     alert('Swiped ' + direction);
@@ -371,33 +372,45 @@ app.controller('loginCtrl', function($rootScope, $scope, $http){
   };
 });
 
-app.controller('addExpenseCtrl', function($scope, $http){
-
-  $scope.example1model = [];
-  $scope.example1data = [ {id: 1, label: "David"}, {id: 2, label: "Jhon"}, {id: 3, label: "Danny"} ];
-
-
+app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
+  $scope.typesSelected = [];
 
   $http.get('srv/loader.php?requri=expenses&types')
        .then(function successfullRequest(response){
          $scope.types = response.data;
-         $scope.type = $scope.types[0];
        },function failedRequest(response){
          console.log('types load failed');
        });
 
   $scope.addExpense = function(){
+
+    $rootScope.infoBox = {visible: true, success: true};
+
     function postExpenseData(data){
       var date = new Date(data.date);
       data.date = date.getTime();
 
-      $http.post('srv/loader.php.?requri=expenses', data)
+      $http.post('srv/loader.php?requri=expenses', data)
            .then(function(response){
              //sucess
-             console.log(response);
-           },function(){
+             $rootScope.infoBox = {visible: true, success: true};
+             $timeout(function(){
+               $rootScope.infoBox = {visible: false, success: true};
+             }, 600);
+           },function(response){
              //fail
+             $rootScope.infoBox = {visible: true, success: false};
+             $timeout(function(){
+               $rootScope.infoBox = {visible: false, success: false};
+             }, 1200);
            });
+
+       $scope.cost = null;
+       $scope.types = null;
+       $scope.description = null;
+       $scope.date = null;
+       $scope.addExpenseForm.$setPristine();
+       $scope.addExpenseForm.$setUntouched();
     }
 
     if($scope.getLocation){
@@ -405,7 +418,7 @@ app.controller('addExpenseCtrl', function($scope, $http){
         navigator.geolocation.getCurrentPosition(function(position){
           postExpenseData({
             'cost': $scope.cost,
-            'type': $scope.type,
+            'types': $scope.typesSelected,
             'description': $scope.description,
             'date': $scope.date,
             'location': {
@@ -419,7 +432,7 @@ app.controller('addExpenseCtrl', function($scope, $http){
     }else{
       postExpenseData({
         'cost': $scope.cost,
-        'type': $scope.type,
+        'types': $scope.typesSelected,
         'description': $scope.description,
         'date': $scope.date
       });

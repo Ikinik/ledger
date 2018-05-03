@@ -78,47 +78,60 @@ class DBModel {
     }
   }
 
-  public function insertExpense(int $cost, int $type, string $description, int $date){
+  public function insertExpense(int $userID, int $cost, array $types, $description, $date){
+    $moveSt = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`)
+                              VALUES (?, ?, ?, ?, ?)");
+
+    $typeToMoveST = $this->db->prepare("INSERT INTO ledger.types_moves (`type_id`, `move_id`) VALUES (?, ?)");
+
     try {
-      $st = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`)
-                                VALUES (?, ?, ?, ?, ?)");
-      $st->execute([$cost,
-                    $type,
-                    empty($description) ? null : $description,
-                    (empty($date) || $date = 0) ? null : $date
-                  ]);
+      $this->db->beginTransaction();
+      $moveSt->execute([1, $userID, $cost, $description, $date]);
+
+      $moveID = $this->db->lastInsertId();
+
+      foreach ($types as $type) {
+        $typeToMoveST->execute([$type, $moveID]);
+      }
+
+      $this->db->commit();
     } catch (PDOException $e) {
-        //echo $e->getMessage();
+        echo $e->getMessage();
+        $this->db->rollBack();
         return false;
     }
     return true;
   }
 
-  public function insertExpenseWithPoint(int $cost, int $type, string $description, int $date, float $lat, float $long, float $alt){
-    $stp = $this->db->prepare("INSERT INTO points (`lat`, `long`, `alt`)
+  public function insertExpenseWithPoint(int $userID, int $cost, array $types, $description, $date, float $lat, float $long, $alt){
+    $pointSt = $this->db->prepare("INSERT INTO ledger.points (`lat`, `long`, `alt`)
                                VALUES (?,?,?)");
 
-   $st = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`, `point_id`)
+    $moveSt = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`, `point_id`)
                              VALUES (?, ?, ?, ?, ?, ?)");
+
+    $typeToMoveST = $this->db->prepare("INSERT INTO ledger.types_moves (`type_id`, `move_id`) VALUES (?, ?)");
+
 
     try {
       $this->db->beginTransaction();
 
-      $stp->execute([$lat, $long, $alt]);
-      $pointID = $stp->lastInsertId();
-      $st->execute([$cost,
-                    $type,
-                    empty($description) ? null : $description,
-                    (empty($date) || $date = 0) ? null : $date,
-                    $pointID
-                  ]);
+      $pointSt->execute([$lat, $long, $alt]);
+      $pointID = $this->db->lastInsertId();
+      $moveSt->execute([1, $userID, $cost, $description, $date, $pointID]);
+      $moveID = $this->db->lastInsertId();
+
+      foreach ($types as $type) {
+        $typeToMoveST->execute([$type, $moveID]);
+      }
 
       $this->db->commit();
     } catch (Exception $e) {
+      echo $e->getMessage();
       $this->db->rollBack();
       return false;
     }
-
+    return true;
   }
 
 }

@@ -15,6 +15,11 @@
           ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
     </div>
 
+    <div id="info-box"
+         ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
+         <span ng-if="infoBox.success">Added</span>
+         <span ng-if="!infoBox.success">Error, something went wrong</span>
+    </div>
 
     <!-- form -->
     <div ui-if="activeTab == 1" class="tab-content">
@@ -44,9 +49,9 @@
 
                 <div ng-dropdown-multiselect=""
                      id="multiselect"
-                     options="example1data"
-                     selected-model="example1model"
-                     extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false}"></div>
+                     options="types"
+                     selected-model="typesSelected"
+                     extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}"></div>
 
                 </div>
               </td>

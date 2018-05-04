@@ -13,6 +13,10 @@ class Router {
     $this->routes['/'] = 'LoginCtrl';
     $this->routes['login'] = 'LoginCtrl';
     $this->routes['expenses'] = 'ExpensesFromCtrl';
+    $this->routes['long-term-expenses'] = 'LongTermExpensesFromCtrl';
+    $this->routes['incomes'] = 'IncomesFromCtrl';
+    $this->routes['debts'] = 'DebtsFromCtrl';
+    $this->routes['claims'] = 'ClaimsFromCtrl';
   }
 
   public static function getInstance(){
@@ -68,12 +72,16 @@ class Router {
       $this->get = $queryArray;
       $this->post = $this->parseQueryPostArray();
 
-      if(!($result = $this->route($requri, $this->get, $this->post))){
+      $result = $this->route($requri, $this->get, $this->post);
+
+      if(!$result && !is_array($result)){
         http_response_code(400); //bad request
         die();
       }
-
       return $result;
+
+
+      return $this->route($requri, $this->get, $this->post);
     }else{
       http_response_code(400); //bad request
       die();

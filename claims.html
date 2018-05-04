@@ -15,10 +15,16 @@
           ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
     </div>
 
+    <div id="info-box"
+         ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
+         <span ng-if="infoBox.success">Added</span>
+         <span ng-if="!infoBox.success">Error, something went wrong</span>
+    </div>
+
     <!-- form -->
     <div ui-if="activeTab == 1" class="tab-content">
-    <div class="section">
-      <form role="form" ng-submit='login()'>
+    <div class="section" ng-controller="addClaimCtrl">
+      <form role="form" name="addClaimForm" ng-submit='addClaim()'>
         <fieldset>
           <legend>Add claim</legend>
 
@@ -29,19 +35,23 @@
                   <label for="addClaim-sum">Sum</label>
                   <input id="addClaim-sum"
                          type="number"
-                         ng-model="number"
+                         name="cost"
+                         ng-model="cost"
                          class="form-control"
-                         placeholder="Enter cost">
+                         placeholder="Enter cost"
+                         required>
                 </div>
               </td>
               <td>
                 <div class="form-group">
                   <label for="addClaim-type">Type</label>
-                  <select id="addClaim-type" class="form-control">
-                    <option>other</option>
-                    <option>shit</option>
-                    <option>random</option>
-                  </select>
+
+                  <div ng-dropdown-multiselect=""
+                       id="multiselect"
+                       options="types"
+                       selected-model="typesSelected"
+                       extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}"></div>
+
                 </div>
               </td>
             </tr>
@@ -49,7 +59,13 @@
 
             <div class="form-group">
               <label for="addIncome-description">Description</label>
-              <textarea id="addIncome-description" class="form-control" rows="4"></textarea>
+              <textarea id="addIncome-description"
+                        name="description"
+                        ng-model="description"
+                        class="form-control"
+                        rows="4"
+                        maxlength="255">
+              </textarea>
             </div>
 
             <!-- more  -->
@@ -63,28 +79,48 @@
                   </h4>
                 </div>
 
-                <div ui-if="myAccordion">
-                  <div class="panel-body">
+                <div class="panel-body" ui-class="{'panel-visible': myAccordion, 'panel-hidden': !myAccordion}">
 
-                    <div class="form-group">
-                      <label for="addClaim-Issueddate">Date of Issue</label>
-                      <input id="addClaim-Issueddate"
-                             type="date"
-                             ng-model="number"
-                             class="form-control">
-                    </div>
-
-                    <div class="form-group">
-                      <label for="addClaim-dueDate">Due date</label>
-                      <input id="addClaim-dueDate"
-                             type="date"
-                             ng-model="number"
-                             class="form-control">
-                    </div>
-
+                  <div class="form-group">
+                    <label for="addClaim-Issueddate">Date of Issue</label>
+                    <input id="addClaim-Issueddate"
+                           type="date"
+                           name="date"
+                           ng-model="date"
+                           ng-blur="checkDate()"
+                           class="form-control">
                   </div>
-                </div>
 
+                  <div class="form-group">
+
+                    <!--
+                    <label for="addClaim-dueDate">Due date</label>
+                    -->
+
+                    <table class="title-table">
+                      <tr>
+                        <td>
+                          <label for="dueDate">Due date</label>
+                        </td>
+                        <td>
+                          <span ng-messages="addClaimForm.date.$error">
+                            <span class="error-message" ng-message="required">Hoooovno</span>
+                            <span class="error-message" ng-message="dueDateGtCurr">Hoooovno</span>
+                            <span class="error-message" ng-message="dueDateGtDate">Hoooovno3</span>
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <input id="addClaim-dueDate"
+                           type="date"
+                           name="dueDate"
+                           ng-model="dueDate"
+                           ng-blur="checkDate()"
+                           class="form-control">
+                  </div>
+
+                </div>
               </div>
             </div>
             <!-- /more  -->

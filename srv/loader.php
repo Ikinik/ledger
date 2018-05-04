@@ -19,8 +19,8 @@ spl_autoload_register(function ($className){
 });
 
 $router = Router::getInstance();
+
+ob_start();
 header('Content-Type: application/json');
 echo json_encode($router->routeDefault());
-//echo $router->route('login', array(), array('email' => 'adam.sorfa@gmail.com', 'pass' => 'password'));
-
-//$router->route($_GET['requri']);
+ob_end_flush();

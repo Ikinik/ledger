@@ -9,6 +9,7 @@
 var app = angular.module('MobileAngularUiExamples', [
   'ngRoute',
   'ngCookies',
+  'ngMessages',
   'mobile-angular-ui',
   'angularjs-dropdown-multiselect',
 
@@ -384,11 +385,11 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
 
   $scope.addExpense = function(){
 
-    $rootScope.infoBox = {visible: true, success: true};
-
     function postExpenseData(data){
       var date = new Date(data.date);
       data.date = date.getTime();
+
+      console.log(data.date);
 
       $http.post('srv/loader.php?requri=expenses', data)
            .then(function(response){
@@ -406,7 +407,7 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
            });
 
        $scope.cost = null;
-       $scope.types = null;
+       $scope.typesSelected = [];
        $scope.description = null;
        $scope.date = null;
        $scope.addExpenseForm.$setPristine();
@@ -438,6 +439,220 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
       });
     }
   };
+});
 
 
+
+app.controller('addLongTermExpenseCtrl', function($rootScope, $scope, $http, $timeout){
+  $scope.typesSelected = [];
+
+  $http.get('srv/loader.php?requri=long-term-expenses&types')
+       .then(function successfullRequest(response){
+         $scope.types = response.data;
+       },function failedRequest(response){
+         console.log('types load failed');
+       });
+
+  $scope.addLongTermExpense = function(){
+
+    var date = new Date($scope.date);
+
+    var data = {
+      'cost': $scope.cost,
+      'types': $scope.typesSelected,
+      'description': $scope.description,
+      'date': date.getTime()
+    }
+
+    $http.post('srv/loader.php?requri=long-term-expenses', data)
+         .then(function(response){
+           //sucess
+           $rootScope.infoBox = {visible: true, success: true};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: true};
+           }, 600);
+         },function(response){
+           //fail
+           $rootScope.infoBox = {visible: true, success: false};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: false};
+           }, 1200);
+         });
+
+     $scope.cost = null;
+     $scope.typesSelected = [];
+     $scope.description = null;
+     $scope.date = null;
+     $scope.addLongTermExpenseForm.$setPristine();
+     $scope.addLongTermExpenseForm.$setUntouched();
+
+  };
+});
+
+
+
+
+app.controller('addIncomeCtrl', function($rootScope, $scope, $http, $timeout){
+  $scope.typesSelected = [];
+
+  $http.get('srv/loader.php?requri=incomes&types')
+       .then(function successfullRequest(response){
+         $scope.types = response.data;
+       },function failedRequest(response){
+         console.log('types load failed');
+       });
+
+  $scope.addIncome = function(){
+
+    var date = new Date($scope.date);
+
+    var data = {
+      'cost': $scope.cost,
+      'types': $scope.typesSelected,
+      'description': $scope.description,
+      'date': date.getTime()
+    }
+
+    $http.post('srv/loader.php?requri=incomes', data)
+         .then(function(response){
+           //sucess
+           $rootScope.infoBox = {visible: true, success: true};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: true};
+           }, 600);
+         },function(response){
+           //fail
+           $rootScope.infoBox = {visible: true, success: false};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: false};
+           }, 1200);
+         });
+
+     $scope.cost = null;
+     $scope.typesSelected = [];
+     $scope.description = null;
+     $scope.date = null;
+     $scope.addIncomeForm.$setPristine();
+     $scope.addIncomeForm.$setUntouched();
+
+  };
+});
+
+
+
+app.controller('addDebtCtrl', function($rootScope, $scope, $http, $timeout){
+  $scope.typesSelected = [];
+
+  $http.get('srv/loader.php?requri=debts&types')
+       .then(function successfullRequest(response){
+         $scope.types = response.data;
+       },function failedRequest(response){
+         console.log('types load failed');
+       });
+
+  $scope.addDebt = function(){
+
+    var date = new Date($scope.date);
+    var dueDate = new Date($scope.dueDate);
+
+    var data = {
+      'cost': $scope.cost,
+      'types': $scope.typesSelected,
+      'description': $scope.description,
+      'date': date.getTime(),
+      'dueDate': dueDate.getTime()
+    }
+
+    $http.post('srv/loader.php?requri=debts', data)
+         .then(function(response){
+           //sucess
+           $rootScope.infoBox = {visible: true, success: true};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: true};
+           }, 600);
+         },function(response){
+           //fail
+           $rootScope.infoBox = {visible: true, success: false};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: false};
+           }, 1200);
+         });
+
+     $scope.cost = null;
+     $scope.typesSelected = [];
+     $scope.description = null;
+     $scope.date = null;
+     $scope.dueDate = null;
+     $scope.addDebtForm.$setPristine();
+     $scope.addDebtForm.$setUntouched();
+
+  };
+});
+
+
+
+app.controller('addClaimCtrl', function($rootScope, $scope, $http, $timeout){
+  $scope.typesSelected = [];
+
+  $http.get('srv/loader.php?requri=claims&types')
+       .then(function successfullRequest(response){
+         $scope.types = response.data;
+       },function failedRequest(response){
+         console.log('types load failed');
+       });
+
+  $scope.checkDate = function(){
+    if($scope.date == null){
+        var currentDate = new Date();
+        var dueDate = new Date($scope.dueDate);
+
+        if(currentDate.getTime() > dueDate.getTime()){
+          $scope.addClaimForm.date.$setValidity("dueDateGtCurr", false);
+        }else{
+          $scope.addClaimForm.date.$setValidity("dueDateGtCurr",true);
+        }
+    }else if($scope.date > $scope.dueDate){
+      $scope.addClaimForm.date.$setValidity("dueDateGtDate", false);
+    }else{
+      $scope.addClaimForm.date.$setValidity("dueDateGtDate", true);
+    }
+  }
+
+  $scope.addClaim = function(){
+
+    var date = new Date($scope.date);
+    var dueDate = new Date($scope.dueDate);
+
+    var data = {
+      'cost': $scope.cost,
+      'types': $scope.typesSelected,
+      'description': $scope.description,
+      'date': (date.getTime() / 1000),
+      'dueDate': (dueDate.getTime() / 1000)
+    }
+
+    $http.post('srv/loader.php?requri=claims', data)
+         .then(function(response){
+           //sucess
+           $rootScope.infoBox = {visible: true, success: true};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: true};
+           }, 600);
+         },function(response){
+           //fail
+           $rootScope.infoBox = {visible: true, success: false};
+           $timeout(function(){
+             $rootScope.infoBox = {visible: false, success: false};
+           }, 1200);
+         });
+
+     $scope.cost = null;
+     $scope.typesSelected = [];
+     $scope.description = null;
+     $scope.date = null;
+     $scope.dueDate = null;
+     $scope.addClaimForm.$setPristine();
+     $scope.addClaimForm.$setUntouched();
+
+  };
 });

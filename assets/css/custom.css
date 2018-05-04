@@ -19,6 +19,9 @@ hr.cshr {margin-top: 0px}
 .heading-tabs a.left {border-radius: 0px; border-left: none}
 .heading-tabs a.right {border-radius: 0px; border-right: none}
 
+.panel-group .panel-body.panel-visible {display: block}
+.panel-group .panel-body.panel-hidden {display: none}
+
 .tab-content .section {padding-top: 1.5em}
 
 #info-box {overflow-y: hidden;

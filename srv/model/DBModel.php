@@ -78,15 +78,17 @@ class DBModel {
     }
   }
 
-  public function insertExpense(int $userID, int $cost, array $types, $description, $date){
-    $moveSt = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`)
-                              VALUES (?, ?, ?, ?, ?)");
+// !!!!!! INSERTS !!!!!!
+
+  private function insertMove(int $operationID, int $userID, int $cost, array $types, $description, $date, $dueDate = null){
+    $moveSt = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`, `due_date`)
+                              VALUES (?, ?, ?, ?, FROM_UNIXTIME(?), FROM_UNIXTIME(?))");
 
     $typeToMoveST = $this->db->prepare("INSERT INTO ledger.types_moves (`type_id`, `move_id`) VALUES (?, ?)");
 
     try {
       $this->db->beginTransaction();
-      $moveSt->execute([1, $userID, $cost, $description, $date]);
+      $moveSt->execute([$operationID, $userID, $cost, $description, $date, $dueDate]);
 
       $moveID = $this->db->lastInsertId();
 
@@ -95,12 +97,12 @@ class DBModel {
       }
 
       $this->db->commit();
+      return true;
     } catch (PDOException $e) {
-        echo $e->getMessage();
+        //echo $e->getMessage();
         $this->db->rollBack();
         return false;
     }
-    return true;
   }
 
   public function insertExpenseWithPoint(int $userID, int $cost, array $types, $description, $date, float $lat, float $long, $alt){
@@ -108,7 +110,7 @@ class DBModel {
                                VALUES (?,?,?)");
 
     $moveSt = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`, `point_id`)
-                             VALUES (?, ?, ?, ?, ?, ?)");
+                             VALUES (?, ?, ?, ?, FROM_UNIXTIME(?), ?)");
 
     $typeToMoveST = $this->db->prepare("INSERT INTO ledger.types_moves (`type_id`, `move_id`) VALUES (?, ?)");
 
@@ -126,12 +128,32 @@ class DBModel {
       }
 
       $this->db->commit();
+      return true;
     } catch (Exception $e) {
-      echo $e->getMessage();
+      //echo $e->getMessage();
       $this->db->rollBack();
       return false;
     }
-    return true;
+  }
+
+  public function insertExpense(int $userID, int $cost, array $types, $description, $date){
+    return $this->insertMove(1, $userID, $cost, $types, $description, $date);
+  }
+
+  public function insertLongTermExpense(int $userID, int $cost, array $types, $description, $date){
+    return $this->insertMove(2, $userID, $cost, $types, $description, $date);
+  }
+
+  public function insertIncome(int $userID, int $cost, array $types, $description, $date){
+    return $this->insertMove(3, $userID, $cost, $types, $description, $date);
+  }
+
+  public function insertDebt(int $userID, int $cost, array $types, $description, $date, $dueDate){
+    return $this->insertMove(4, $userID, $cost, $types, $description, $date, $dueDate);
+  }
+
+  public function insertClaim(int $userID, int $cost, array $types, $description, $date, $dueDate){
+    return $this->insertMove(5, $userID, $cost, $types, $description, $date, $dueDate);
   }
 
 }

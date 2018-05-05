@@ -550,6 +550,23 @@ app.controller('addDebtCtrl', function($rootScope, $scope, $http, $timeout){
          console.log('types load failed');
        });
 
+   $scope.checkDate = function(){
+     if($scope.date == null){
+         var currentDate = new Date();
+         var dueDate = new Date($scope.dueDate);
+
+         if(currentDate.getTime() > dueDate.getTime()){
+           $scope.addDebtForm.dueDate.$setValidity("dueDateLtCurr", false);
+         }else{
+           $scope.addDebtForm.dueDate.$setValidity("dueDateLtCurr",true);
+         }
+     }else if($scope.date > $scope.dueDate){
+       $scope.addDebtForm.dueDate.$setValidity("dueDateLtDate", false);
+     }else{
+       $scope.addDebtForm.dueDate.$setValidity("dueDateLtDate", true);
+     }
+   }
+
   $scope.addDebt = function(){
 
     var date = new Date($scope.date);
@@ -607,14 +624,14 @@ app.controller('addClaimCtrl', function($rootScope, $scope, $http, $timeout){
         var dueDate = new Date($scope.dueDate);
 
         if(currentDate.getTime() > dueDate.getTime()){
-          $scope.addClaimForm.date.$setValidity("dueDateGtCurr", false);
+          $scope.addClaimForm.dueDate.$setValidity("dueDateLtCurr", false);
         }else{
-          $scope.addClaimForm.date.$setValidity("dueDateGtCurr",true);
+          $scope.addClaimForm.dueDate.$setValidity("dueDateLtCurr",true);
         }
     }else if($scope.date > $scope.dueDate){
-      $scope.addClaimForm.date.$setValidity("dueDateGtDate", false);
+      $scope.addClaimForm.dueDate.$setValidity("dueDateLtDate", false);
     }else{
-      $scope.addClaimForm.date.$setValidity("dueDateGtDate", true);
+      $scope.addClaimForm.dueDate.$setValidity("dueDateLtDate", true);
     }
   }
 

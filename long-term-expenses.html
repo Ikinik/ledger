@@ -24,7 +24,7 @@
      <!-- form -->
      <div ui-if="activeTab == 1" class="tab-content">
        <div class="section" ng-controller="addLongTermExpenseCtrl">
-       <form role="form" name="addLongTermExpenseForm" ng-submit='addLongTermExpense()'>
+       <form role="form" name="addLongTermExpenseForm" ng-submit='addLongTermExpenseForm.$valid && addLongTermExpense()'>
          <fieldset>
            <legend>Add long term expense</legend>
 
@@ -32,13 +32,28 @@
              <tr>
                <td>
                  <div class="form-grouphas-success has-feedback">
-                   <label for="addLongTermExpense-cost">Cost</label>
+
+                   <table class="title-table">
+                     <tr>
+                       <td>
+                         <label for="addLongTermExpense-cost">Cost</label>
+                       </td>
+                       <td>
+                         <span ng-messages="addLongTermExpenseForm.cost.$error" ng-show="!addLongTermExpenseForm.cost.$pristine || addLongTermExpenseForm.cost.$touched">
+                           <span class="error-message" ng-message="required">Please fill me</span>
+                         </span>
+                       </td>
+                     </tr>
+                   </table>
+
                    <input id="addLongTermExpense-cost"
                           type="number"
                           name="cost"
                           ng-model="cost"
+                          ng-model-options="{updateOn: 'blur'}"
                           class="form-control"
                           placeholder="Enter cost"
+                          autofocus
                           required>
                  </div>
                </td>

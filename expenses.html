@@ -120,9 +120,26 @@
 
   <!-- listing -->
   <div ui-if="activeTab == 2">
-    <div class="scrollable-content section">
-      <h3 class="page-header">Tab 2</h3>
-      <p><!-- ... --></p>
+    <div class="section" ng-controller="viewExpensesCtrl">
+      <h3 class="page-header">Expenses list</h3>
+      <table class="table table-striped">
+        <thead>
+            <tr>
+              <th>Cost</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th class="hidable350">Type</th>
+            </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="record in records">
+            <td>{{record.cost}}</td>
+            <td>{{record.date}}</td>
+            <td>{{record.description}}</td>
+            <td class="hidable350">Other, test</td>
+          </tr>
+        </tbody>
+      </table>
   </div>
   </div>
 

@@ -57,3 +57,11 @@ form table.title-table tr td:last-child span.error-message {padding-left: 20px; 
 form table .multiselect-parent, form table .multiselect-parent .dropdown-toggle { width: 100% }
 form table .multiselect-parent ul.dropdown-menu { min-width: 100%; max-width: 100%; width: 100% }
 form table .multiselect-parent ul.dropdown-menu li, form table .multiselect-parent ul.dropdown-menu li a {text-overflow: ellipsis}
+
+/* data view */
+
+@media (max-width: 350px) {
+     .hidable350 {
+         display:None;
+     }
+}

@@ -376,7 +376,7 @@ app.controller('loginCtrl', function($rootScope, $scope, $http){
 app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
   $scope.typesSelected = [];
 
-  $http.get('srv/loader.php?requri=expenses&types')
+  $http.get('srv/loader.php?requri=expenses/types')
        .then(function successfullRequest(response){
          $scope.types = response.data;
        },function failedRequest(response){
@@ -421,7 +421,7 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
             'cost': $scope.cost,
             'types': $scope.typesSelected,
             'description': $scope.description,
-            'date': $scope.date,
+            'date': ($scope.date / 1000),
             'location': {
                 'latitude': position.coords.latitude,
                 'longitude': position.coords.longitude,
@@ -435,18 +435,16 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
         'cost': $scope.cost,
         'types': $scope.typesSelected,
         'description': $scope.description,
-        'date': $scope.date
+        'date': ($scope.date / 1000)
       });
     }
   };
 });
 
-
-
 app.controller('addLongTermExpenseCtrl', function($rootScope, $scope, $http, $timeout){
   $scope.typesSelected = [];
 
-  $http.get('srv/loader.php?requri=long-term-expenses&types')
+  $http.get('srv/loader.php?requri=long-term-expenses/types')
        .then(function successfullRequest(response){
          $scope.types = response.data;
        },function failedRequest(response){
@@ -461,7 +459,7 @@ app.controller('addLongTermExpenseCtrl', function($rootScope, $scope, $http, $ti
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': date.getTime()
+      'date': (date.getTime() / 1000)
     }
 
     $http.post('srv/loader.php?requri=long-term-expenses', data)
@@ -489,13 +487,10 @@ app.controller('addLongTermExpenseCtrl', function($rootScope, $scope, $http, $ti
   };
 });
 
-
-
-
 app.controller('addIncomeCtrl', function($rootScope, $scope, $http, $timeout){
   $scope.typesSelected = [];
 
-  $http.get('srv/loader.php?requri=incomes&types')
+  $http.get('srv/loader.php?requri=incomes/types')
        .then(function successfullRequest(response){
          $scope.types = response.data;
        },function failedRequest(response){
@@ -510,7 +505,7 @@ app.controller('addIncomeCtrl', function($rootScope, $scope, $http, $timeout){
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': date.getTime()
+      'date': (date.getTime() / 1000)
     }
 
     $http.post('srv/loader.php?requri=incomes', data)
@@ -538,12 +533,10 @@ app.controller('addIncomeCtrl', function($rootScope, $scope, $http, $timeout){
   };
 });
 
-
-
 app.controller('addDebtCtrl', function($rootScope, $scope, $http, $timeout){
   $scope.typesSelected = [];
 
-  $http.get('srv/loader.php?requri=debts&types')
+  $http.get('srv/loader.php?requri=debts/types')
        .then(function successfullRequest(response){
          $scope.types = response.data;
        },function failedRequest(response){
@@ -576,8 +569,8 @@ app.controller('addDebtCtrl', function($rootScope, $scope, $http, $timeout){
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': date.getTime(),
-      'dueDate': dueDate.getTime()
+      'date': (date.getTime() / 1000),
+      'dueDate': (dueDate.getTime() / 1000)
     }
 
     $http.post('srv/loader.php?requri=debts', data)
@@ -606,12 +599,10 @@ app.controller('addDebtCtrl', function($rootScope, $scope, $http, $timeout){
   };
 });
 
-
-
 app.controller('addClaimCtrl', function($rootScope, $scope, $http, $timeout){
   $scope.typesSelected = [];
 
-  $http.get('srv/loader.php?requri=claims&types')
+  $http.get('srv/loader.php?requri=claims/types')
        .then(function successfullRequest(response){
          $scope.types = response.data;
        },function failedRequest(response){
@@ -672,4 +663,21 @@ app.controller('addClaimCtrl', function($rootScope, $scope, $http, $timeout){
      $scope.addClaimForm.$setUntouched();
 
   };
+});
+
+
+app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
+  $scope.records = [];
+
+  $http.get('srv/loader.php?requri=expenses/view')
+       .then(function successfullRequest(response){
+         $scope.records = response.data;
+
+         console.log($scope.records);
+
+       },function failedRequest(response){
+         console.log('types load failed');
+       });
+
+
 });

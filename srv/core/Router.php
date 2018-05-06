@@ -12,11 +12,22 @@ class Router {
   private function __construct(){
     $this->routes['/'] = 'LoginCtrl';
     $this->routes['login'] = 'LoginCtrl';
-    $this->routes['expenses'] = 'ExpensesFromCtrl';
-    $this->routes['long-term-expenses'] = 'LongTermExpensesFromCtrl';
-    $this->routes['incomes'] = 'IncomesFromCtrl';
-    $this->routes['debts'] = 'DebtsFromCtrl';
-    $this->routes['claims'] = 'ClaimsFromCtrl';
+
+    $this->routes['expenses'] = 'ExpensesCtrl';
+    $this->routes['expenses/types'] = 'ExpensesCtrl/getTypes';
+    $this->routes['expenses/view'] = 'ExpensesCtrl/getExpenses';
+
+    $this->routes['long-term-expenses'] = 'LongTermExpensesCtrl';
+    $this->routes['long-term-expenses/types'] = 'LongTermExpensesCtrl/getTypes';
+
+    $this->routes['incomes'] = 'IncomesCtrl';
+    $this->routes['incomes/types'] = 'IncomesCtrl/getTypes';
+
+    $this->routes['debts'] = 'DebtsCtrl';
+    $this->routes['debts/types'] = 'DebtsCtrl/getTypes';
+
+    $this->routes['claims'] = 'ClaimsCtrl';
+    $this->routes['claims/types'] = 'ClaimsCtrl/getTypes';
   }
 
   public static function getInstance(){
@@ -80,8 +91,6 @@ class Router {
       }
       return $result;
 
-
-      return $this->route($requri, $this->get, $this->post);
     }else{
       http_response_code(400); //bad request
       die();
@@ -91,12 +100,20 @@ class Router {
   public function route($request, array $get, array $post){
 
     if(isset($this->routes[$request])){
-      $controllerName = $this->routes[$request];
-      $className = "\\app\\ledger\\ctrl\\" . $controllerName;
-      $controler = new $className($get, $post);
+      $controllerPathArr = explode("/", $this->routes[$request]);
+      $controllerName = $controllerPathArr[0];
 
-      if($controler instanceof AbstractBaseCtrl){
-            return $controler->execute();
+      $className = "\\app\\ledger\\ctrl\\" . $controllerName;
+      $controller = new $className($get, $post);
+
+      if($controller instanceof AbstractBaseCtrl){
+            if(isset($controllerPathArr[1])){
+              $method = $controllerPathArr[1];
+
+              return $controller->$method();
+            }else{
+              return $controller->execute();
+            }
       }else{
         return false;
       }

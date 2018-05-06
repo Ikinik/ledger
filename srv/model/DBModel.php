@@ -156,4 +156,20 @@ class DBModel {
     return $this->insertMove(5, $userID, $cost, $types, $description, $date, $dueDate);
   }
 
+
+  public function getExpenses($userID){
+
+    $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
+                              FROM ledger.expenses where ledger.expenses.user_id = ?");
+
+    $st->execute([$userID]);
+    $expenses = $st->fetchAll(\PDO::FETCH_ASSOC);
+
+    for ($i=0; $i < count($expenses) ; $i++) {
+      $expenses[$i]['types'] = json_decode($expenses[$i]['types']);
+    }
+
+    return $expenses;
+  }
+
 }

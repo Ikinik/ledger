@@ -22,5 +22,5 @@ $router = Router::getInstance();
 
 ob_start();
 header('Content-Type: application/json');
-echo json_encode($router->routeDefault());
+echo json_encode($router->routeDefault(), 512);
 ob_end_flush();

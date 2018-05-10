@@ -157,12 +157,21 @@ class DBModel {
   }
 
 
-  public function getExpenses($userID){
+  public function getExpenses($userID, $dateTo = null, $dateFrom = null){
+    if($dateTo && $dateFrom){
+      $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
+                                FROM ledger.expenses where ledger.expenses.user_id = ? AND expenses.date <= FROM_UNIXTIME(?) AND expenses.date >= FROM_UNIXTIME(?) ORDER BY expenses.date LIMIT 500");
+      $st->execute([$userID, $dateTo, $dateFrom]);
+    }else if($dateTo){
+      $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
+                                FROM ledger.expenses where ledger.expenses.user_id = ? AND expenses.date <= FROM_UNIXTIME(?) ORDER BY expenses.date LIMIT 500");
+      $st->execute([$userID, $dateTo]);
+    }else {
+      $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
+                                FROM ledger.expenses where ledger.expenses.user_id = ? ORDER BY expenses.date LIMIT 500");
+      $st->execute([$userID]);
+    }
 
-    $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
-                              FROM ledger.expenses where ledger.expenses.user_id = ?");
-
-    $st->execute([$userID]);
     $expenses = $st->fetchAll(\PDO::FETCH_ASSOC);
 
     for ($i=0; $i < count($expenses) ; $i++) {

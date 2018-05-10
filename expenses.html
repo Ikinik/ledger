@@ -2,11 +2,8 @@
   <span>Expenses</span>
 </div>
 
-<div class="scrollable site-body">
-<div class="scrollable-content">
-
-  <!-- tabs -->
-  <div ui-state="activeTab" default="1">
+<div class="scrollable site-body" ui-state="activeTab" default="2">
+  <div class="scrollable-header">
     <div class="btn-group justified nav-tabs heading-tabs">
       <a ui-set="{'activeTab': 1}"
           ui-class="{'active': activeTab == 1}" class="btn btn-default left">Add</a>
@@ -14,6 +11,11 @@
       <a ui-set="{'activeTab': 2}"
           ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
     </div>
+  </div>
+<div class="scrollable-content">
+
+  <!-- tabs -->
+
 
     <div id="info-box"
          ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
@@ -63,7 +65,8 @@
                      id="multiselect"
                      options="types"
                      selected-model="typesSelected"
-                     extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}"></div>
+                     extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}">
+                </div>
 
                 </div>
               </td>
@@ -87,7 +90,7 @@
                 <td>
                   <div class="form-group">
                     <label>Date</label>
-                    <input id="addExpense-cost"
+                    <input id="addExpense-date"
                            type="date"
                            name="date"
                            ng-model="date"
@@ -121,28 +124,111 @@
   <!-- listing -->
   <div ui-if="activeTab == 2">
     <div class="section" ng-controller="viewExpensesCtrl">
-      <h3 class="page-header">Expenses list</h3>
+
+      <form role="form" name="sortExpenseForm" class="filterForm" ng-submit="">
+        <fieldset ui-shared-state="filterDetails">
+          <legend ui-toggle="filterDetails">
+            Filter
+            <span ui-if="filterDetails" class="glyphicon glyphicon-menu-up"></span>
+            <span ui-if="!filterDetails" class="glyphicon glyphicon-menu-down"></span>
+          </legend>
+
+          <div class="form-body" ui-class="{'form-body-visible': !filterDetails, 'form-body-hidden': filterDetails}">
+
+          <table width="100%" class="filter-table">
+            <tr>
+              <td>
+                <div class="form-group">
+
+                  <table class="title-table">
+                    <tr>
+                      <td>
+                        <label for="filterExpense-dateFrom">Date from</label>
+                      </td>
+                      <td>
+                        <span ng-messages="sortExpenseForm.dateFrom.$error">
+                          <span class="error-message" ng-message="dateToGrDateFrom">Change</span>
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+
+
+                  <input id="filterExpense-dateFrom"
+                         type="date"
+                         name="dateFrom"
+                         max="{{dateTo | parseDateLimitForm}}"
+                         ng-change="dateLimitChanged()"
+                         ng-model="dateFrom"
+                         class="form-control">
+                </div>
+              </td>
+              <td>
+                <div class="form-group">
+                  <label for="filterExpense-dateTo">Date to</label>
+                  <input id="filterExpense-dateTo"
+                         type="date"
+                         name="dateTo"
+                         ng-change="dateLimitChanged()"
+                         ng-model="dateTo"
+                         ng-value="todayDate"
+                         min="{{dateFrom | parseDateLimitForm}}"
+                         max="{{todayDate}}"
+                         class="form-control">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="type">
+                <label for="filterExpense-types">Type</label>
+              </td>
+              <td>
+                <div ng-dropdown-multiselect=""
+                     id="filterExpense-types"
+                     options="types"
+                     events="typesEvents"
+                     selected-model="typesSelected"
+                     extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}">
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        </fieldset>
+      </form>
+
       <table class="table table-striped">
         <thead>
             <tr>
-              <th>Cost</th>
-              <th>Date</th>
-              <th>Description</th>
-              <th class="hidable350">Type</th>
+              <th ng-click="order = 'cost'; reverse = !reverse">
+                Cost
+                <span ng-show="order == 'cost' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                <span ng-show="order == 'cost' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+              </th>
+              <th ng-click="order = 'date'; reverse = !reverse" class="col-date">
+                Date
+                <span ng-show="order == 'date' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                <span ng-show="order == 'date' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+              </th>
+              <th ng-click="order = 'description'; reverse = !reverse">
+                Description
+                <span ng-show="order == 'description' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                <span ng-show="order == 'description' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+              </th>
+              <th class="hidable400">Type</th>
             </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="record in records">
-            <td>{{record.cost}}</td>
-            <td>{{record.date}}</td>
+          <tr ng-repeat="record in records | orderBy: order: reverse ">
+            <td class="td-cost">{{record.cost | currency : "" : 0}}</td>
+            <td class="col-date">{{ record.date | parseDate | date: 'MM.dd yy'}}</td>
             <td>{{record.description}}</td>
-            <td class="hidable350">Other, test</td>
+            <td class="hidable400">{{ record.types | joinTypes }}</td>
           </tr>
         </tbody>
       </table>
   </div>
   </div>
 
-</div>
 </div>
 </div>

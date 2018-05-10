@@ -60,8 +60,40 @@ form table .multiselect-parent ul.dropdown-menu li, form table .multiselect-pare
 
 /* data view */
 
-@media (max-width: 350px) {
-     .hidable350 {
+@media (max-width: 400px) {
+     .hidable400 {
          display:None;
      }
 }
+
+table.table { width: 100%; overflow: hidden}
+table.table td.td-cost {text-align: right}
+table.table td {white-space: nowrap; overflow: hidden; text-overflow: ellipsis}
+
+table.table tr td.col-date {width: 65px}
+
+table.table.table-fixed thead {
+  width: 97%;
+}
+table.table.table-fixed tbody {
+  height: 230px;
+  overflow-y: auto;
+  width: 100%;
+}
+table.table.table-fixed thead, table.table.table-fixed tbody, table.table.table-fixed tr, table.table.table-fixed td, table.table.table-fixed th {
+  display: block;
+}
+table.table.table-fixed tbody td, table.table.table-fixed thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
+}
+
+form.filterForm table.filter-table tr td:first-of-type {padding-right: 5px}
+form.filterForm table.filter-table tr td input[type=date] {display: inline-block; min-width: 138px}
+form.filterForm table.filter-table tr td.type {text-align: right; padding-right: 5px}
+form.filterForm fieldset {padding-bottom: 1.2em}
+form.filterForm fieldset legend {margin-bottom: 0px}
+form.filterForm fieldset legend span.glyphicon {font-size: 14px}
+form.filterForm fieldset div.form-body {border-bottom: 1px solid #e5e5e5; padding-bottom: 1em}
+form.filterForm fieldset div.form-body.form-body-visible {display: block}
+form.filterForm fieldset div.form-body.form-body-visible {display: none}

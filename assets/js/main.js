@@ -249,6 +249,46 @@ app.directive('dragMe', ['$drag', function($drag) {
   };
 }]);
 
+//FILTERS
+
+app.filter('parseDate', function() {
+    return function(dateString) {
+        return Date.parse(dateString);
+    };
+});
+
+app.filter('parseDateLimitForm', function(){
+  return function(dateString){
+    if(dateString){
+        var selDate = new Date(dateString);
+        selDate.setDate(selDate.getDate() + 1);
+        return selDate.toISOString().slice(0,10);
+    }else{
+        return dateString;
+    }
+  };
+});
+
+app.filter('joinTypes', function() {
+    return function(types) {
+        var concat = "";
+
+        if(types instanceof Array){
+            var length = types.length;
+            for(var i = 0; i < length ; i++) {
+
+              if(i != (length - 1)){
+                concat += types[i].name + ", ";
+              }else{
+                concat += types[i].name;
+              }
+            }
+        }
+
+        return concat;
+    };
+});
+
 //
 // For this trivial demo we have just a unique MainController
 // for everything
@@ -667,17 +707,93 @@ app.controller('addClaimCtrl', function($rootScope, $scope, $http, $timeout){
 
 
 app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
+  $scope.typesSelected = [];
   $scope.records = [];
+  $scope.recordsReceived = [];
+  $scope.order = "date";
+  $scope.reverse = true;
+  $scope.dateTo = null;
+  $scope.dateFrom = null;
+
+  $scope.typesEvents = {onSelectionChanged: function(){
+    console.log($scope.typesSelected);
+
+    var filtered = [];
+    var selLength = $scope.typesSelected.length;
+
+    $scope.recordsReceived.forEach(function(value, index, object){
+      if(value.types instanceof Array){
+        var valueTypesLength = value.types.length;
+        var matched = 0;
+
+        //loop throught types in result rows
+        for(var c=0; c < valueTypesLength; c++){
+
+            //loop throught selected types
+            for(var i=0; i < selLength; i++){
+              if($scope.typesSelected[i].id == value.types[c].id){
+                matched++;
+              }
+            }
+        }
+
+        //chceck if everithig was matched
+        if(matched == selLength){
+          filtered.push(value);
+        }
+      }else if(selLength == 0){
+        filtered.push(value);
+      }
+
+      $scope.records = filtered;
+    });
+
+
+  }};
+
+  $scope.dateLimitChanged = function(){
+
+    var dateFrom = new Date($scope.dateFrom);
+    var dateTo = new Date($scope.dateTo);
+
+    if(dateFrom > dateTo){
+      $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", false);
+    }else{
+      $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", true);
+
+      var data = {
+        'date-from': ($scope.dateFrom)? (dateFrom.getTime() / 1000) : null,
+        'date-to': (dateTo.getTime() / 1000)
+      };
+
+      $http.get('srv/loader.php?requri=expenses/view', {'params': data})
+           .then(function successfullRequest(response){
+             $scope.recordsReceived = response.data;
+             $scope.records = response.data;
+             
+           },function failedRequest(response){
+             console.log('filtered view data load failed');
+           });
+    }
+  }
 
   $http.get('srv/loader.php?requri=expenses/view')
        .then(function successfullRequest(response){
+         $scope.recordsReceived = response.data;
          $scope.records = response.data;
 
-         console.log($scope.records);
-
        },function failedRequest(response){
-         console.log('types load failed');
+         console.log('view data load failed');
        });
 
+   $http.get('srv/loader.php?requri=expenses/types')
+        .then(function successfullRequest(response){
+          $scope.types = response.data;
+        },function failedRequest(response){
+          console.log('types load failed');
+        });
+
+    var todayDate = new Date();
+    $scope.todayDate = todayDate.toISOString().slice(0,10);
 
 });

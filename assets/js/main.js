@@ -714,10 +714,10 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
   $scope.reverse = true;
   $scope.dateTo = null;
   $scope.dateFrom = null;
+  $scope.selectedRow = null;
+  $scope.modalVisible = false;
 
   $scope.typesEvents = {onSelectionChanged: function(){
-    console.log($scope.typesSelected);
-
     var filtered = [];
     var selLength = $scope.typesSelected.length;
 
@@ -747,16 +747,42 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
 
       $scope.records = filtered;
     });
-
-
   }};
 
-  $scope.dateLimitChanged = function(){
+  $scope.showDetails = function(record){
+    $scope.selectedRow = record;
+    $scope.modalVisible = true;
+  }
+
+  $scope.recordDelete = function(){
+    if($scope.selectedRow.id){
+      $http.post('srv/loader.php?requri=expenses/delete', {'id': $scope.selectedRow.id})
+           .then(function successfullRequest(response){
+             $scope.loadResults();
+             $scope.modalVisible = false;
+           }, function failedRequest(response){
+             console.log('delete failed');
+           });
+    }
+  }
+
+  $scope.loadResults = function(){
 
     var dateFrom = new Date($scope.dateFrom);
     var dateTo = new Date($scope.dateTo);
 
-    if(dateFrom > dateTo){
+    if(!$scope.dateFrom && !$scope.dateTo){
+      //date is not set
+      $http.get('srv/loader.php?requri=expenses/view')
+           .then(function successfullRequest(response){
+             $scope.recordsReceived = response.data;
+             $scope.records = response.data;
+
+             $scope.typesEvents.onSelectionChanged();
+           },function failedRequest(response){
+             console.log('view data load failed');
+           });
+    }else if(dateFrom > dateTo){
       $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", false);
     }else{
       $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", true);
@@ -770,21 +796,13 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
            .then(function successfullRequest(response){
              $scope.recordsReceived = response.data;
              $scope.records = response.data;
-             
+
+             $scope.typesEvents.onSelectionChanged();
            },function failedRequest(response){
              console.log('filtered view data load failed');
            });
     }
   }
-
-  $http.get('srv/loader.php?requri=expenses/view')
-       .then(function successfullRequest(response){
-         $scope.recordsReceived = response.data;
-         $scope.records = response.data;
-
-       },function failedRequest(response){
-         console.log('view data load failed');
-       });
 
    $http.get('srv/loader.php?requri=expenses/types')
         .then(function successfullRequest(response){
@@ -792,6 +810,8 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
         },function failedRequest(response){
           console.log('types load failed');
         });
+
+    $scope.loadResults();
 
     var todayDate = new Date();
     $scope.todayDate = todayDate.toISOString().slice(0,10);

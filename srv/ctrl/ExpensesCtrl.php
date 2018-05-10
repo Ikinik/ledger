@@ -119,6 +119,27 @@ class ExpensesCtrl extends AbstractAuthCtrl {
       return $expenses;
     }catch (\Exception $e) {
       http_response_code($e->getCode());
+      die();
+    }
+  }
+
+  public function removeExpense(){
+    try{
+      if(!isset($this->post['id'])){
+        throw new \Exception('', 400); //bad request
+      }
+
+      if(empty($this->post['id'])){
+        throw new \Exception('', 400); //bad request
+      }
+
+      $id = (int)$this->post['id'];
+
+      $db = DBModel::getInstance();
+      return $db->deleteMove($this->userID, $id);
+      
+    }catch (\Exception $e){
+      http_response_code($e->getCode());
       echo $e;
       die();
     }

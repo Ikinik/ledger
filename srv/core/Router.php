@@ -16,6 +16,7 @@ class Router {
     $this->routes['expenses'] = 'ExpensesCtrl';
     $this->routes['expenses/types'] = 'ExpensesCtrl/getTypes';
     $this->routes['expenses/view'] = 'ExpensesCtrl/getExpenses';
+    $this->routes['expenses/delete'] = 'ExpensesCtrl/removeExpense';
 
     $this->routes['long-term-expenses'] = 'LongTermExpensesCtrl';
     $this->routes['long-term-expenses/types'] = 'LongTermExpensesCtrl/getTypes';

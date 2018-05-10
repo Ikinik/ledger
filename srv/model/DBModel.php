@@ -157,7 +157,7 @@ class DBModel {
   }
 
 
-  public function getExpenses($userID, $dateTo = null, $dateFrom = null){
+  public function getExpenses(int $userID, $dateTo = null, $dateFrom = null){
     if($dateTo && $dateFrom){
       $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
                                 FROM ledger.expenses where ledger.expenses.user_id = ? AND expenses.date <= FROM_UNIXTIME(?) AND expenses.date >= FROM_UNIXTIME(?) ORDER BY expenses.date LIMIT 500");
@@ -179,6 +179,11 @@ class DBModel {
     }
 
     return $expenses;
+  }
+
+  public function deleteMove(int $userID, int $moveID){
+    $st = $this->db->prepare("UPDATE ledger.moves SET moves.valid = 0 WHERE moves.user_id = ? AND moves.id = ?");
+    return $st->execute([$userID, $moveID]);
   }
 
 }

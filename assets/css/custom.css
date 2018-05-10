@@ -97,3 +97,22 @@ form.filterForm fieldset legend span.glyphicon {font-size: 14px}
 form.filterForm fieldset div.form-body {border-bottom: 1px solid #e5e5e5; padding-bottom: 1em}
 form.filterForm fieldset div.form-body.form-body-visible {display: block}
 form.filterForm fieldset div.form-body.form-body-visible {display: none}
+
+.my-modal {position: fixed; display: none; top: 0; right: 0; bottom: 0; left: 0; z-index: 1050; -webkit-overflow-scrolling: touch; outline: 0}
+.my-modal.modal-visible {display: block}
+.my-modal.modal-hidden {display: none}
+
+.my-modal .modal-footer table {width: 100%}
+.my-modal .modal-footer table tr td:first-of-type {text-align: left}
+.my-modal .modal-footer table tr td:last-of-type {text-align: right}
+
+.my-modal table.table.detail-table {border-bottom: 1px solid #ddd; margin-bottom: 10px}
+.my-modal table.table.detail-table tr td {border-top: none}
+.my-modal table.table.detail-table tr th {border-top: none}
+
+.my-modal .modal-body {padding-bottom: 0px}
+.my-modal div.description {padding-left: 8px; padding-right: 8px}
+.my-modal div.description span {font-weight: bold; margin-right: 5px}
+.my-modal div.types-listing {padding-left: 8px; padding-right: 8px; padding-top: 20px}
+.my-modal div.types-listing span {font-weight: bold; margin-right: 5px}
+.my-modal div.bottom-info {font-size: 10px; text-align: right; color: gray; margin-top: 1em}

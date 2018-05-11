@@ -116,3 +116,15 @@ form.filterForm fieldset div.form-body.form-body-visible {display: none}
 .my-modal div.types-listing {padding-left: 8px; padding-right: 8px; padding-top: 20px}
 .my-modal div.types-listing span {font-weight: bold; margin-right: 5px}
 .my-modal div.bottom-info {font-size: 10px; text-align: right; color: gray; margin-top: 1em}
+
+
+form[name="typesConfigForm"] legend {width: 70px}
+
+table#settings {margin-top: -50px}
+table#settings th {vertical-align: bottom; text-align: left; padding-bottom: 0.5em}
+table#settings th.rotate {height: 95px; white-space: nowrap; background-color: white}
+table#settings th.rotate div {transform: translate(0px, -10px) rotate(320deg);
+                              width: 35px;
+                              text-align: left}
+table#settings tr td {padding-bottom: 0.5em}                              
+table#settings tr td input.name {width: 100px; margin-right: 15px; padding: 2px 4px 2px 4px; border: 1px solid #ccc; border-radius: 2px}

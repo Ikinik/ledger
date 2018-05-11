@@ -37,7 +37,7 @@ app.config(function($routeProvider) {
   $routeProvider.when('/incomes', {templateUrl: 'incomes.html', reloadOnSearch: false});
   $routeProvider.when('/debts', {templateUrl: 'debts.html', reloadOnSearch: false});
   $routeProvider.when('/claims', {templateUrl: 'claims.html', reloadOnSearch: false});
-  $routeProvider.when('/forms', {templateUrl: 'forms.html', reloadOnSearch: false});
+  $routeProvider.when('/config', {templateUrl: 'config.html', reloadOnSearch: false});
   $routeProvider.when('/login', {templateUrl: 'login.html', reloadOnSearch: false});
 });
 
@@ -815,5 +815,10 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
 
     var todayDate = new Date();
     $scope.todayDate = todayDate.toISOString().slice(0,10);
+
+});
+
+
+app.controller('configCtrl', function($rootScope, $scope, $http){
 
 });

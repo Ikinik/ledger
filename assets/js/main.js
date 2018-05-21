@@ -819,6 +819,44 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
 });
 
 
-app.controller('configCtrl', function($rootScope, $scope, $http){
+app.controller('settingsCtrl', function($rootScope, $scope, $http, $timeout){
+    $scope.inputs = [];
+
+    $scope.deleteType = function(rowID){
+      if($scope.inputs[rowID].id == null){
+          $scope.inputs.splice(rowID, 1);
+      }
+    }
+
+    $scope.addField = function(){
+       var input = {id: null, name: '', forType: [false,false,false,false,false]}
+       $scope.inputs.push(input);
+    }
+
+    $scope.typesSave = function(){
+      $http.post('srv/loader.php?requri=types/update', {types: $scope.inputs})
+           .then(function successfullRequest(response){
+             console.log(response);
+
+             $rootScope.infoBox = {visible: true, success: true};
+             $timeout(function(){
+               $rootScope.infoBox = {visible: false, success: true};
+             }, 600);
+           }, function failedRequest(response){
+             $rootScope.infoBox = {visible: true, success: false};
+             $timeout(function(){
+               $rootScope.infoBox = {visible: false, success: false};
+             }, 1200);
+
+             console.log('delete failed');
+           });
+    }
+
+    $http.get('srv/loader.php?requri=types')
+         .then(function successfullRequest(response){
+           $scope.inputs = response.data;
+         },function failedRequest(response){
+           console.log('types load failed');
+         });
 
 });

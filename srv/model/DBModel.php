@@ -186,4 +186,95 @@ class DBModel {
     return $st->execute([$userID, $moveID]);
   }
 
+  public function getTypesForOperations(int $userID){
+    $setCounter = $this->db->prepare("SET @row_number = 0");
+    $st = $this->db->prepare("SELECT (@row_number:=@row_number + 1) AS rowId, types_for_operaions.id, types_for_operaions.name, types_for_operaions.for_types as forType FROM ledger.types_for_operaions WHERE types_for_operaions.user_id = ?");
+
+    try{
+      $this->db->beginTransaction();
+      $setCounter->execute();
+      $st->execute([$userID]);
+      $results = $st->fetchAll(\PDO::FETCH_ASSOC);
+      $this->db->commit();
+    } catch (PDOException $e) {
+      $this->db->rollBack();
+      return false;
+    }
+
+    $countResults = count($results);
+    for ($i=0; $i < $countResults; $i++) {
+      $forType = json_decode($results[$i]['forType']);
+
+      $newForType = [in_array(1, $forType),
+                     in_array(2, $forType),
+                     in_array(3, $forType),
+                     in_array(4, $forType),
+                     in_array(5, $forType)];
+      $results[$i]['forType'] = $newForType;
+    }
+    return $results;
+  }
+
+  public function deleteType(int $userID, int $typeID){
+    $st = $this->db->prepare("UPDATE ledger.types SET types.valid = 0 WHERE types.user_id = ? AND types.id = ?");
+    return $st->execute([$userID, $typeID]);
+  }
+
+  public function updateType(int $userID, int $typeID, $typeName, array $forType){
+    $forTypeArr = [];
+    foreach ($forType as $i => $type) {
+      $forTypeArr[] = $i;
+    }
+
+    $stRename = $this->db->prepare("UPDATE ledger.types SET types.name = ? WHERE types.user_id = ? AND types.id = ?");
+    $stDeleteOps = $this->db->prepare("DELETE FROM ledger.types_operations WHERE types_operations.type_id = ?");
+    $toInsert = $this->db->prepare("INSERT INTO ledger.types_operations (types_operations.operation_id, types_operations.type_id) VALUES (?, ?)");
+
+    try{
+      $this->db->beginTransaction();
+
+      $stRename->execute([$typeName, $userID, $typeID]);
+      $stDeleteOps->execute([$typeID]);
+
+      foreach ($forTypeArr as $operationID) {
+        $toInsert->execute([$operationID, $typeID]);
+      }
+
+      $this->db->commit();
+    }(PDOException $e){
+      $this->db->rollBack();
+      return false();
+    }
+  }
+
+  public function addType(int $userID, $typeName, array $forType){
+    $forTypeArr = [];
+    foreach ($forType as $i => $type) {
+      $forTypeArr[] = $i;
+    }
+
+    $typeIns = $this->db->prepare("INSERT INTO ledger.types (types.user_id, types.name) VALUES (?, ?)");
+    $toInsert = $this->db->prepare("INSERT INTO ledger.types_operations (types_operations.operation_id, types_operations.type_id) VALUES (?, ?)");
+
+    try{
+      $this->db->beginTransaction();
+
+      $typeIns->execute([$userID, $typeName]);
+      $typeID = $this->db->lastInsertId();
+
+      foreach ($forTypeArr as $operationID) {
+        $toInsert->execute([$operationID, $typeID]);
+      }
+
+      $this->db->commit();
+    }catch (PDOException $e){
+      $this->rollBack();
+      return false;
+    }
+
+  }
+
+
+
+
 }

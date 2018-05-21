@@ -29,6 +29,9 @@ class Router {
 
     $this->routes['claims'] = 'ClaimsCtrl';
     $this->routes['claims/types'] = 'ClaimsCtrl/getTypes';
+
+    $this->routes['types'] = 'TypesCtrl';
+    $this->routes['types/update'] = 'TypesCtrl/updateTypes';
   }
 
   public static function getInstance(){

@@ -53,7 +53,7 @@ class LongTermExpensesCtrl extends AbstractAuthCtrl {
 
   public function getTypes(){
     $db = DBModel::getInstance();
-    $types = $db->getTypesForMoveType($this->userID,2);
+    $types = $db->getTypesForOperation($this->userID,2);
     return $types;
   }
 }

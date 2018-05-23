@@ -58,7 +58,7 @@ class ClaimsCtrl extends AbstractAuthCtrl {
 
   public function getTypes(){
     $db = DBModel::getInstance();
-    $types = $db->getTypesForMoveType($this->userID,5);
+    $types = $db->getTypesForOperation($this->userID,5);
     return $types;
   }
 

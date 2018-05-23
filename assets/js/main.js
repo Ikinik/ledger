@@ -419,6 +419,7 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
   $http.get('srv/loader.php?requri=expenses/types')
        .then(function successfullRequest(response){
          $scope.types = response.data;
+         condole.log(response.data);
        },function failedRequest(response){
          console.log('types load failed');
        });
@@ -822,9 +823,24 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
 app.controller('settingsCtrl', function($rootScope, $scope, $http, $timeout){
     $scope.inputs = [];
 
+    var loadContent = function(){
+      $scope.inputs = [];
+
+      $http.get('srv/loader.php?requri=types')
+           .then(function successfullRequest(response){
+             $scope.inputs = response.data;
+           },function failedRequest(response){
+             console.log('types load failed');
+           });
+    }
+
     $scope.deleteType = function(rowID){
       if($scope.inputs[rowID].id == null){
           $scope.inputs.splice(rowID, 1);
+      }else if($scope.inputs[rowID]['delete']){
+        $scope.inputs[rowID]['delete'] = false;
+      }else{
+        $scope.inputs[rowID]['delete'] = true;
       }
     }
 
@@ -837,26 +853,21 @@ app.controller('settingsCtrl', function($rootScope, $scope, $http, $timeout){
       $http.post('srv/loader.php?requri=types/update', {types: $scope.inputs})
            .then(function successfullRequest(response){
              console.log(response);
+             loadContent();
 
              $rootScope.infoBox = {visible: true, success: true};
              $timeout(function(){
                $rootScope.infoBox = {visible: false, success: true};
              }, 600);
            }, function failedRequest(response){
+             loadContent();
+
              $rootScope.infoBox = {visible: true, success: false};
              $timeout(function(){
                $rootScope.infoBox = {visible: false, success: false};
              }, 1200);
-
-             console.log('delete failed');
            });
     }
 
-    $http.get('srv/loader.php?requri=types')
-         .then(function successfullRequest(response){
-           $scope.inputs = response.data;
-         },function failedRequest(response){
-           console.log('types load failed');
-         });
-
+    loadContent();
 });

@@ -59,7 +59,7 @@ class DebtsCtrl extends AbstractAuthCtrl {
 
   public function getTypes(){
     $db = DBModel::getInstance();
-    $types = $db->getTypesForMoveType($this->userID,4);
+    $types = $db->getTypesForOperation($this->userID,4);
     return $types;
   }
 }

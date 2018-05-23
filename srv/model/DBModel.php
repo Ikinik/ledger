@@ -53,12 +53,22 @@ class DBModel {
     }
   }
 
+  /* DEPRECATED - NOT IN USE */
   public function getTypesForMoveType(int $userID,int $moveID){
     $st = $this->db->prepare("SELECT types.id, types.name
                               FROM ledger.types_moves
                               JOIN ledger.types on types.id = types_moves.type_id
                               where types_moves.move_id = ? and types.user_id = ?");
     $st->execute([$userID, $moveID]);
+    $types = $st->fetchAll(\PDO::FETCH_ASSOC);
+    return $types;
+  }
+
+  public function getTypesForOperation(int $userID,int $operationID){
+    $st = $this->db->prepare("SELECT ledger.types.id AS id, ledger.types.name AS name FROM ledger.types_operations
+                              JOIN ledger.types ON ledger.types_operations.type_id = ledger.types.id
+                              WHERE ledger.types.valid = 1 AND ledger.types.user_id = ? AND ledger.types_operations.operation_id = ?");
+    $st->execute([$userID, $operationID]);
     $types = $st->fetchAll(\PDO::FETCH_ASSOC);
     return $types;
   }
@@ -205,6 +215,9 @@ class DBModel {
     for ($i=0; $i < $countResults; $i++) {
       $forType = json_decode($results[$i]['forType']);
 
+      //prevent null value of wariable, problem with in_array function.
+      if($forType == null){ $forType = [];}
+
       $newForType = [in_array(1, $forType),
                      in_array(2, $forType),
                      in_array(3, $forType),
@@ -221,10 +234,6 @@ class DBModel {
   }
 
   public function updateType(int $userID, int $typeID, $typeName, array $forType){
-    $forTypeArr = [];
-    foreach ($forType as $i => $type) {
-      $forTypeArr[] = $i;
-    }
 
     $stRename = $this->db->prepare("UPDATE ledger.types SET types.name = ? WHERE types.user_id = ? AND types.id = ?");
     $stDeleteOps = $this->db->prepare("DELETE FROM ledger.types_operations WHERE types_operations.type_id = ?");
@@ -236,23 +245,22 @@ class DBModel {
       $stRename->execute([$typeName, $userID, $typeID]);
       $stDeleteOps->execute([$typeID]);
 
-      foreach ($forTypeArr as $operationID) {
-        $toInsert->execute([$operationID, $typeID]);
+      foreach ($forType as $i => $selected) {
+        $operationID = $i + 1;
+
+        if($selected){
+            $toInsert->execute([$operationID, $typeID]);
+        }
       }
 
       $this->db->commit();
-    }(PDOException $e){
+    }catch(PDOException $e){
       $this->db->rollBack();
       return false();
     }
   }
 
   public function addType(int $userID, $typeName, array $forType){
-    $forTypeArr = [];
-    foreach ($forType as $i => $type) {
-      $forTypeArr[] = $i;
-    }
-
     $typeIns = $this->db->prepare("INSERT INTO ledger.types (types.user_id, types.name) VALUES (?, ?)");
     $toInsert = $this->db->prepare("INSERT INTO ledger.types_operations (types_operations.operation_id, types_operations.type_id) VALUES (?, ?)");
 
@@ -262,8 +270,12 @@ class DBModel {
       $typeIns->execute([$userID, $typeName]);
       $typeID = $this->db->lastInsertId();
 
-      foreach ($forTypeArr as $operationID) {
-        $toInsert->execute([$operationID, $typeID]);
+      foreach ($forType as $i => $selected) {
+        $operationID = $i + 1;
+
+        if($selected){
+            $toInsert->execute([$operationID, $typeID]);
+        }
       }
 
       $this->db->commit();

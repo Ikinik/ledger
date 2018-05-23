@@ -81,7 +81,7 @@ class ExpensesCtrl extends AbstractAuthCtrl {
 
   public function getTypes(){
     $db = DBModel::getInstance();
-    $types = $db->getTypesForMoveType($this->userID,1);
+    $types = $db->getTypesForOperation($this->userID,1);
     return $types;
   }
 
@@ -137,7 +137,7 @@ class ExpensesCtrl extends AbstractAuthCtrl {
 
       $db = DBModel::getInstance();
       return $db->deleteMove($this->userID, $id);
-      
+
     }catch (\Exception $e){
       http_response_code($e->getCode());
       echo $e;

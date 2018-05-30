@@ -2,18 +2,18 @@
   <span>Long term expenses</span>
 </div>
 
-<div class="scrollable site-body">
+<div class="scrollable site-body" ui-state="activeTab" default="1">
+  <div class="scrollable-header">
+    <div class="btn-group justified nav-tabs heading-tabs">
+      <a ui-set="{'activeTab': 1}"
+          ui-class="{'active': activeTab == 1}" class="btn btn-default left">Add</a>
+
+      <a ui-set="{'activeTab': 2}"
+          ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
+    </div>
+  </div>
+
 <div class="scrollable-content">
-
-   <!-- tabs -->
-   <div ui-state="activeTab" default="1">
-     <div class="btn-group justified nav-tabs heading-tabs">
-       <a ui-set="{'activeTab': 1}"
-           ui-class="{'active': activeTab == 1}" class="btn btn-default left">Add</a>
-
-       <a ui-set="{'activeTab': 2}"
-           ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
-     </div>
 
      <div id="info-box"
           ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
@@ -21,9 +21,11 @@
           <span ng-if="!infoBox.success">Error, something went wrong</span>
      </div>
 
+     <!-- tabs -->
      <!-- form -->
      <div ui-if="activeTab == 1" class="tab-content">
-       <div class="section" ng-controller="addLongTermExpenseCtrl">
+     <div class="section" ng-controller="addLongTermExpenseCtrl">
+
        <form role="form" name="addLongTermExpenseForm" ng-submit='addLongTermExpenseForm.$valid && addLongTermExpense()'>
          <fieldset>
            <legend>Add long term expense</legend>
@@ -117,22 +119,180 @@
            Add
          </button>
 
-         <div ui-content-for="navbarAction">
-           <a class="btn" ng-click="login()">Login</a>
-         </div>
-
        </form>
      </div>
      </div>
 
      <!-- listing -->
      <div ui-if="activeTab == 2">
-       <div class="scrollable-content section">
-         <h3 class="page-header">Tab 2</h3>
-         <p><!-- ... --></p>
-     </div>
+       <div class="section" ng-controller="viewLongTermExpensesCtrl">
+
+         <form role="form" name="sortExpenseForm" class="filterForm" ng-submit="">
+           <fieldset ui-shared-state="filterDetails">
+             <legend ui-toggle="filterDetails">
+               Filter
+               <span ui-if="filterDetails" class="glyphicon glyphicon-menu-up"></span>
+               <span ui-if="!filterDetails" class="glyphicon glyphicon-menu-down"></span>
+             </legend>
+
+             <div class="form-body" ui-class="{'form-body-visible': !filterDetails, 'form-body-hidden': filterDetails}">
+
+             <table width="100%" class="filter-table">
+               <tr>
+                 <td>
+                   <div class="form-group">
+
+                     <table class="title-table">
+                       <tr>
+                         <td>
+                           <label for="filterExpense-dateFrom">Date from</label>
+                         </td>
+                         <td>
+                           <span ng-messages="sortExpenseForm.dateFrom.$error">
+                             <span class="error-message" ng-message="dateToGrDateFrom">Change</span>
+                           </span>
+                         </td>
+                       </tr>
+                     </table>
+
+
+                     <input id="filterExpense-dateFrom"
+                            type="date"
+                            name="dateFrom"
+                            max="{{dateTo | parseDateLimitForm}}"
+                            ng-change="loadResults()"
+                            ng-model="dateFrom"
+                            class="form-control">
+                   </div>
+                 </td>
+                 <td>
+                   <div class="form-group">
+                     <label for="filterExpense-dateTo">Date to</label>
+                     <input id="filterExpense-dateTo"
+                            type="date"
+                            name="dateTo"
+                            ng-change="loadResults()"
+                            ng-model="dateTo"
+                            ng-value="todayDate"
+                            min="{{dateFrom | parseDateLimitForm}}"
+                            max="{{todayDate}}"
+                            class="form-control">
+                   </div>
+                 </td>
+               </tr>
+               <tr>
+                 <td class="type">
+                   <label for="filterExpense-types">Type</label>
+                 </td>
+                 <td>
+                   <div ng-dropdown-multiselect=""
+                        id="filterExpense-types"
+                        options="types"
+                        events="typesEvents"
+                        selected-model="typesSelected"
+                        extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}">
+                   </div>
+                 </td>
+               </tr>
+             </table>
+           </div>
+           </fieldset>
+         </form>
+
+         <table class="table table-striped">
+           <thead>
+               <tr>
+                 <th ng-click="order = 'cost'; reverse = !reverse">
+                   Cost
+                   <span ng-show="order == 'cost' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                   <span ng-show="order == 'cost' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+                 </th>
+                 <th ng-click="order = 'date'; reverse = !reverse" class="col-date">
+                   Date
+                   <span ng-show="order == 'date' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                   <span ng-show="order == 'date' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+                 </th>
+                 <th ng-click="order = 'description'; reverse = !reverse">
+                   Description
+                   <span ng-show="order == 'description' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                   <span ng-show="order == 'description' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+                 </th>
+                 <th class="hidable400">Type</th>
+               </tr>
+           </thead>
+           <tbody>
+             <tr ng-repeat="record in records | orderBy: order: reverse " ng-click="showDetails(record)">
+               <td class="td-cost">{{record.cost | currency : "" : 0}}</td>
+               <td class="col-date">{{ record.date | parseDate | date: 'MM.dd yy'}}</td>
+               <td>{{record.description}}</td>
+               <td class="hidable400">{{ record.types | joinTypes }}</td>
+             </tr>
+           </tbody>
+         </table>
+
+         <!-- modal vindow -->
+
+         <div class="my-modal ng-scope" ng-class="{'modal-visible': modalVisible, 'modal-hidden': !modalVisible}">
+           <div class="modal-backdrop in"></div>
+           <div class="modal-dialog">
+             <div class="modal-content">
+               <div class="modal-header">
+                 <button class="close" ng-click="modalVisible = false">×</button>
+                 <h4 class="modal-title">Details</h4>
+               </div>
+               <div class="modal-body">
+
+                 <table class="detail-table table">
+                   <colgroup>
+                    <col width="20px">
+                    <col>
+                  </colgroup>
+                   <tr>
+                     <th>Cost</th>
+                     <td>{{selectedRow.cost | currency : "" : 0}}</td>
+                   </tr>
+                   <tr>
+                     <th>Date</th>
+                     <td>{{selectedRow.date | parseDate | date: 'MM.dd yyyy' }}</td>
+                   </tr>
+                 </table>
+
+                 <div class="description">
+                   <span>Description:</span>
+                   {{selectedRow.description}}
+                 </div>
+
+                 <div class="types-listing">
+                   <span>Type:</span>
+                   {{selectedRow.types | joinTypes }}
+                 </div>
+
+                 <div class="bottom-info">
+                   <span>Created:</span>
+                   {{selectedRow.created}}
+                 </div>
+
+               </div>
+               <div class="modal-footer">
+                 <table>
+                   <tr>
+                     <td>
+                       <button ng-click="recordDelete()" class="btn btn-default">Delete</button>
+                     </td>
+                     <td>
+                       <button ng-click="modalVisible = false" class="btn btn-primary">Close</button>
+                     </td>
+                   </tr>
+                 </table>
+               </div>
+             </div>
+           </div>
+         </div>
+
+         <!-- end of modal vindow -->
+
+       </div>
      </div>
 
    </div>
-</div>
 </div>

@@ -2,7 +2,7 @@
   <span>Expenses</span>
 </div>
 
-<div class="scrollable site-body" ui-state="activeTab" default="2">
+<div class="scrollable site-body" ui-state="activeTab" default="1">
   <div class="scrollable-header">
     <div class="btn-group justified nav-tabs heading-tabs">
       <a ui-set="{'activeTab': 1}"
@@ -14,14 +14,13 @@
   </div>
 <div class="scrollable-content">
 
-  <!-- tabs -->
-
     <div id="info-box"
          ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
          <span ng-if="infoBox.success">Added</span>
          <span ng-if="!infoBox.success">Error, something went wrong</span>
     </div>
 
+    <!-- tabs -->
     <!-- form -->
     <div ui-if="activeTab == 1" class="tab-content">
     <div class="section" ng-controller="addExpenseCtrl">
@@ -111,10 +110,6 @@
         <button class="btn btn-primary btn-block">
           Add
         </button>
-
-        <div ui-content-for="navbarAction">
-          <a class="btn" ng-click="login()">Login</a>
-        </div>
 
       </form>
     </div>

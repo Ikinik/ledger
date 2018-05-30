@@ -191,6 +191,102 @@ class DBModel {
     return $expenses;
   }
 
+  public function getLongTermExpenses(int $userID, $dateTo = null, $dateFrom = null){
+    if($dateTo && $dateFrom){
+      $st = $this->db->prepare("SELECT long_term_expenses.id, long_term_expenses.cost, long_term_expenses.description, long_term_expenses.date, long_term_expenses.created, long_term_expenses.types
+                                FROM ledger.long_term_expenses where ledger.long_term_expenses.user_id = ? AND long_term_expenses.date <= FROM_UNIXTIME(?) AND long_term_expenses.date >= FROM_UNIXTIME(?) ORDER BY long_term_expenses.date LIMIT 500");
+      $st->execute([$userID, $dateTo, $dateFrom]);
+    }else if($dateTo){
+      $st = $this->db->prepare("SELECT long_term_expenses.id, long_term_expenses.cost, long_term_expenses.description, long_term_expenses.date, long_term_expenses.created, long_term_expenses.types
+                                FROM ledger.long_term_expenses where ledger.long_term_expenses.user_id = ? AND long_term_expenses.date <= FROM_UNIXTIME(?) ORDER BY long_term_expenses.date LIMIT 500");
+      $st->execute([$userID, $dateTo]);
+    }else {
+      $st = $this->db->prepare("SELECT long_term_expenses.id, long_term_expenses.cost, long_term_expenses.description, long_term_expenses.date, long_term_expenses.created, long_term_expenses.types
+                                FROM ledger.long_term_expenses where ledger.long_term_expenses.user_id = ? ORDER BY long_term_expenses.date LIMIT 500");
+      $st->execute([$userID]);
+    }
+
+    $expenses = $st->fetchAll(\PDO::FETCH_ASSOC);
+
+    for ($i=0; $i < count($expenses) ; $i++) {
+      $expenses[$i]['types'] = json_decode($expenses[$i]['types']);
+    }
+
+    return $expenses;
+  }
+
+  public function getIncomes(int $userID, $dateTo = null, $dateFrom = null){
+    if($dateTo && $dateFrom){
+      $st = $this->db->prepare("SELECT incomes.id, incomes.cost, incomes.description, incomes.date, incomes.created, incomes.types
+                                FROM ledger.incomes where ledger.incomes.user_id = ? AND incomes.date <= FROM_UNIXTIME(?) AND incomes.date >= FROM_UNIXTIME(?) ORDER BY incomes.date LIMIT 500");
+      $st->execute([$userID, $dateTo, $dateFrom]);
+    }else if($dateTo){
+      $st = $this->db->prepare("SELECT incomes.id, incomes.cost, incomes.description, incomes.date, incomes.created, incomes.types
+                                FROM ledger.incomes where ledger.incomes.user_id = ? AND incomes.date <= FROM_UNIXTIME(?) ORDER BY incomes.date LIMIT 500");
+      $st->execute([$userID, $dateTo]);
+    }else {
+      $st = $this->db->prepare("SELECT incomes.id, incomes.cost, incomes.description, incomes.date, incomes.created, incomes.types
+                                FROM ledger.incomes where ledger.incomes.user_id = ? ORDER BY incomes.date LIMIT 500");
+      $st->execute([$userID]);
+    }
+
+    $expenses = $st->fetchAll(\PDO::FETCH_ASSOC);
+
+    for ($i=0; $i < count($expenses) ; $i++) {
+      $expenses[$i]['types'] = json_decode($expenses[$i]['types']);
+    }
+
+    return $expenses;
+  }
+
+  public function getDebts(int $userID, $dateTo = null, $dateFrom = null){
+    if($dateTo && $dateFrom){
+      $st = $this->db->prepare("SELECT debts.id, debts.cost, debts.description, debts.date, debts.due_date, debts.created, debts.types
+                                FROM ledger.debts where ledger.debts.user_id = ? AND debts.date <= FROM_UNIXTIME(?) AND debts.date >= FROM_UNIXTIME(?) ORDER BY debts.date LIMIT 500");
+      $st->execute([$userID, $dateTo, $dateFrom]);
+    }else if($dateTo){
+      $st = $this->db->prepare("SELECT debts.id, debts.cost, debts.description, debts.date, debts.due_date, debts.created, debts.types
+                                FROM ledger.debts where ledger.debts.user_id = ? AND debts.date <= FROM_UNIXTIME(?) ORDER BY debts.date LIMIT 500");
+      $st->execute([$userID, $dateTo]);
+    }else {
+      $st = $this->db->prepare("SELECT debts.id, debts.cost, debts.description, debts.date, debts.due_date, debts.created, debts.types
+                                FROM ledger.debts where ledger.debts.user_id = ? ORDER BY debts.date LIMIT 500");
+      $st->execute([$userID]);
+    }
+
+    $expenses = $st->fetchAll(\PDO::FETCH_ASSOC);
+
+    for ($i=0; $i < count($expenses) ; $i++) {
+      $expenses[$i]['types'] = json_decode($expenses[$i]['types']);
+    }
+
+    return $expenses;
+  }
+
+  public function getClaims(int $userID, $dateTo = null, $dateFrom = null){
+    if($dateTo && $dateFrom){
+      $st = $this->db->prepare("SELECT claims.id, claims.cost, claims.description, claims.date, claims.due_date, claims.created, claims.types
+                                FROM ledger.claims where ledger.claims.user_id = ? AND claims.date <= FROM_UNIXTIME(?) AND claims.date >= FROM_UNIXTIME(?) ORDER BY claims.date LIMIT 500");
+      $st->execute([$userID, $dateTo, $dateFrom]);
+    }else if($dateTo){
+      $st = $this->db->prepare("SELECT claims.id, claims.cost, claims.description, claims.date, claims.due_date, claims.created, claims.types
+                                FROM ledger.claims where ledger.claims.user_id = ? AND claims.date <= FROM_UNIXTIME(?) ORDER BY claims.date LIMIT 500");
+      $st->execute([$userID, $dateTo]);
+    }else {
+      $st = $this->db->prepare("SELECT claims.id, claims.cost, claims.description, claims.date, claims.due_date, claims.created, claims.types
+                                FROM ledger.claims where ledger.claims.user_id = ? ORDER BY claims.date LIMIT 500");
+      $st->execute([$userID]);
+    }
+
+    $expenses = $st->fetchAll(\PDO::FETCH_ASSOC);
+
+    for ($i=0; $i < count($expenses) ; $i++) {
+      $expenses[$i]['types'] = json_decode($expenses[$i]['types']);
+    }
+
+    return $expenses;
+  }
+
   public function deleteMove(int $userID, int $moveID){
     $st = $this->db->prepare("UPDATE ledger.moves SET moves.valid = 0 WHERE moves.user_id = ? AND moves.id = ?");
     return $st->execute([$userID, $moveID]);

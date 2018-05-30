@@ -20,15 +20,23 @@ class Router {
 
     $this->routes['long-term-expenses'] = 'LongTermExpensesCtrl';
     $this->routes['long-term-expenses/types'] = 'LongTermExpensesCtrl/getTypes';
+    $this->routes['long-term-expenses/view'] = 'LongTermExpensesCtrl/getLongTermExpenses';
+    $this->routes['long-term-expenses/delete'] = 'LongTermExpensesCtrl/removeLongTermExpense';
 
     $this->routes['incomes'] = 'IncomesCtrl';
     $this->routes['incomes/types'] = 'IncomesCtrl/getTypes';
+    $this->routes['incomes/view'] = 'IncomesCtrl/getIncomes';
+    $this->routes['incomes/delete'] = 'IncomesCtrl/removeIncome';
 
     $this->routes['debts'] = 'DebtsCtrl';
     $this->routes['debts/types'] = 'DebtsCtrl/getTypes';
+    $this->routes['debts/view'] = 'DebtsCtrl/getDebts';
+    $this->routes['debts/delete'] = 'DebtsCtrl/removeDebt';
 
     $this->routes['claims'] = 'ClaimsCtrl';
     $this->routes['claims/types'] = 'ClaimsCtrl/getTypes';
+    $this->routes['claims/view'] = 'ClaimsCtrl/getClaims';
+    $this->routes['claims/delete'] = 'ClaimsCtrl/removeClaim';
 
     $this->routes['types'] = 'TypesCtrl';
     $this->routes['types/update'] = 'TypesCtrl/updateTypes';

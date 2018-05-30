@@ -24,6 +24,8 @@ hr.cshr {margin-top: 0px}
 
 .tab-content .section {padding-top: 1.5em}
 
+a#logout {font-size: 18px; top: 4px; display: inline-block}
+
 #info-box {overflow-y: hidden;
            max-height: 0px;
 
@@ -62,6 +64,12 @@ form table .multiselect-parent ul.dropdown-menu li, form table .multiselect-pare
 
 @media (max-width: 400px) {
      .hidable400 {
+         display:None;
+     }
+}
+
+@media (max-width: 450px) {
+     .hidable450 {
          display:None;
      }
 }

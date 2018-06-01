@@ -1,8 +1,12 @@
 .scrollable.site-body {background-color: white}
 hr.cshr {margin-top: 0px}
+.full-width {width: 100%}
 
+.addNumTypeTable {width: 100%}
 .addNumTypeTable tr td:first-of-type {padding-right: 5px}
+.addDateLocationTable {width: 100%}
 .addDateLocationTable tr td:first-of-type {padding-right: 10px}
+.addDateLocationTable tr td:last-of-type {width: 70px}
 
 .panel-more .panel-heading {
     text-align: center; background: url('../img/line-bg.png') left center repeat-x;
@@ -96,6 +100,7 @@ table.table.table-fixed tbody td, table.table.table-fixed thead > tr> th {
   border-bottom-width: 0;
 }
 
+form.filterForm table.filter-table {width: 100%}
 form.filterForm table.filter-table tr td:first-of-type {padding-right: 5px}
 form.filterForm table.filter-table tr td input[type=date] {display: inline-block; min-width: 138px}
 form.filterForm table.filter-table tr td.type {text-align: right; padding-right: 5px}
@@ -117,6 +122,7 @@ form.filterForm fieldset div.form-body.form-body-visible {display: none}
 .my-modal table.table.detail-table {border-bottom: 1px solid #ddd; margin-bottom: 10px}
 .my-modal table.table.detail-table tr td {border-top: none}
 .my-modal table.table.detail-table tr th {border-top: none}
+.my-modal table.table.detail-table.single tr th {width: 20px}
 
 .my-modal .modal-body {padding-bottom: 0px}
 .my-modal div.description {padding-left: 8px; padding-right: 8px}

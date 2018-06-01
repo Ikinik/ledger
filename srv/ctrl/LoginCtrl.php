@@ -21,8 +21,8 @@ class LoginCtrl extends AbstractBaseCtrl {
         throw new \Exception('', 400); // bad request
       }
 
-      $email = $this->post['email'];
-      $pass = $this->post['pass'];
+      $email = htmlspecialchars($this->post['email']);
+      $pass = htmlspecialchars($this->post['pass']);
 
 
       //verify credentials

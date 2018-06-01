@@ -1,35 +1,35 @@
-<div ui-content-for="title">
+<div data-ui-content-for="title">
   <span>Incomes</span>
 </div>
 
-<div class="scrollable site-body" ui-state="activeTab" default="2">
+<div class="scrollable site-body" data-ui-state="activeTab" data-default="2">
   <div class="scrollable-header">
     <div class="btn-group justified nav-tabs heading-tabs">
-      <a ui-set="{'activeTab': 1}"
-          ui-class="{'active': activeTab == 1}" class="btn btn-default left">Add</a>
+      <a data-ui-set="{'activeTab': 1}"
+          data-ui-class="{'active': activeTab == 1}" class="btn btn-default left">Add</a>
 
-      <a ui-set="{'activeTab': 2}"
-          ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
+      <a data-ui-set="{'activeTab': 2}"
+          data-ui-class="{'active': activeTab == 2}" class="btn btn-default right">View</a>
     </div>
   </div>
 <div class="scrollable-content">
 
     <div id="info-box"
-         ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
-         <span ng-if="infoBox.success">Added</span>
-         <span ng-if="!infoBox.success">Error, something went wrong</span>
+         data-ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
+         <span data-ng-if="infoBox.success">Added</span>
+         <span data-ng-if="!infoBox.success">Error, something went wrong</span>
     </div>
 
     <!-- tabs -->
     <!-- form -->
-    <div ui-if="activeTab == 1" class="tab-content">
-    <div class="section" ng-controller="addIncomeCtrl">
+    <div data-ui-if="activeTab == 1" class="tab-content">
+    <div class="section" data-ng-controller="addIncomeCtrl">
 
-      <form role="form" name="addIncomeForm" ng-submit='addIncomeForm.$valid && addIncome()'>
+      <form role="form" name="addIncomeForm" data-ng-submit='addIncomeForm.$valid && addIncome()'>
         <fieldset>
           <legend>Add income</legend>
 
-          <table width="100%" class="addNumTypeTable">
+          <table class="addNumTypeTable">
             <tr>
               <td>
                 <div class="form-grouphas-success has-feedback">
@@ -40,8 +40,8 @@
                         <label for="addIncome-sum">Sum</label>
                       </td>
                       <td>
-                        <span ng-messages="addIncomeForm.cost.$error" ng-show="!addIncomeForm.cost.$pristine || addIncomeForm.cost.$touched">
-                          <span class="error-message" ng-message="required">Please fill me</span>
+                        <span data-ng-messages="addIncomeForm.cost.$error" data-ng-show="!addIncomeForm.cost.$pristine || addIncomeForm.cost.$touched">
+                          <span class="error-message" data-ng-message="required">Please fill me</span>
                         </span>
                       </td>
                     </tr>
@@ -50,8 +50,8 @@
                   <input id="addIncome-sum"
                          type="number"
                          name="cost"
-                         ng-model="cost"
-                         ng-model-options="{updateOn: 'blur'}"
+                         data-ng-model="cost"
+                         data-ng-model-options="{updateOn: 'blur'}"
                          class="form-control"
                          placeholder="Enter cost"
                          autofocus
@@ -60,13 +60,12 @@
               </td>
               <td>
                 <div class="form-group">
-                  <label for="addIncome-type">Type</label>
+                  <label>Type</label>
 
-                  <div ng-dropdown-multiselect=""
-                       id="multiselect"
-                       options="types"
-                       selected-model="typesSelected"
-                       extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}"></div>
+                  <div data-ng-dropdown-multiselect=""
+                       data-options="types"
+                       data-selected-model="typesSelected"
+                       data-extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}"></div>
 
                 </div>
               </td>
@@ -77,7 +76,7 @@
               <label for="addIncome-description">Description</label>
               <textarea id="addIncome-description"
                         name="description"
-                        ng-model="description"
+                        data-ng-model="description"
                         class="form-control"
                         rows="4"
                         maxlength="255">
@@ -85,24 +84,24 @@
             </div>
 
             <!-- more  -->
-            <div class="panel-group" ui-shared-state="myAccordion">
+            <div class="panel-group" data-ui-shared-state="myAccordion">
 
               <div class="panel-more">
-                <div class="panel-heading" ui-toggle="myAccordion">
+                <div class="panel-heading" data-ui-toggle="myAccordion">
                   <h4 class="panel-title button">
-                      <span ui-if="!myAccordion">more</span>
-                      <span ui-if="myAccordion">less</span>
+                      <span data-ui-if="!myAccordion">more</span>
+                      <span data-ui-if="myAccordion">less</span>
                   </h4>
                 </div>
 
-                <div class="panel-body" ui-class="{'panel-visible': myAccordion, 'panel-hidden': !myAccordion}">
+                <div class="panel-body" data-ui-class="{'panel-visible': myAccordion, 'panel-hidden': !myAccordion}">
 
                   <div class="form-group">
                     <label>Date</label>
                     <input id="addIncome-date"
                            type="date"
                            name="date"
-                           ng-model="date"
+                           data-ng-model="date"
                            class="form-control">
                   </div>
 
@@ -124,20 +123,20 @@
     </div>
 
     <!-- listing -->
-    <div ui-if="activeTab == 2">
-      <div class="section" ng-controller="viewIncomesCtrl">
+    <div data-ui-if="activeTab == 2">
+      <div class="section" data-ng-controller="viewIncomesCtrl">
 
-        <form role="form" name="sortExpenseForm" class="filterForm" ng-submit="">
-          <fieldset ui-shared-state="filterDetails">
-            <legend ui-toggle="filterDetails">
+        <form role="form" name="sortExpenseForm" class="filterForm" data-ng-submit="">
+          <fieldset data-ui-shared-state="filterDetails">
+            <legend data-ui-toggle="filterDetails">
               Filter
-              <span ui-if="filterDetails" class="glyphicon glyphicon-menu-up"></span>
-              <span ui-if="!filterDetails" class="glyphicon glyphicon-menu-down"></span>
+              <span data-ui-if="filterDetails" class="glyphicon glyphicon-menu-up"></span>
+              <span data-ui-if="!filterDetails" class="glyphicon glyphicon-menu-down"></span>
             </legend>
 
-            <div class="form-body" ui-class="{'form-body-visible': !filterDetails, 'form-body-hidden': filterDetails}">
+            <div class="form-body" data-ui-class="{'form-body-visible': !filterDetails, 'form-body-hidden': filterDetails}">
 
-            <table width="100%" class="filter-table">
+            <table class="filter-table">
               <tr>
                 <td>
                   <div class="form-group">
@@ -148,8 +147,8 @@
                           <label for="filterExpense-dateFrom">Date from</label>
                         </td>
                         <td>
-                          <span ng-messages="sortExpenseForm.dateFrom.$error">
-                            <span class="error-message" ng-message="dateToGrDateFrom">Change</span>
+                          <span data-ng-messages="sortExpenseForm.dateFrom.$error">
+                            <span class="error-message" data-ng-message="dateToGrDateFrom">Change</span>
                           </span>
                         </td>
                       </tr>
@@ -160,8 +159,8 @@
                            type="date"
                            name="dateFrom"
                            max="{{dateTo | parseDateLimitForm}}"
-                           ng-change="loadResults()"
-                           ng-model="dateFrom"
+                           data-ng-change="loadResults()"
+                           data-ng-model="dateFrom"
                            class="form-control">
                   </div>
                 </td>
@@ -171,9 +170,9 @@
                     <input id="filterExpense-dateTo"
                            type="date"
                            name="dateTo"
-                           ng-change="loadResults()"
-                           ng-model="dateTo"
-                           ng-value="todayDate"
+                           data-ng-change="loadResults()"
+                           data-ng-model="dateTo"
+                           data-ng-value="todayDate"
                            min="{{dateFrom | parseDateLimitForm}}"
                            max="{{todayDate}}"
                            class="form-control">
@@ -182,15 +181,14 @@
               </tr>
               <tr>
                 <td class="type">
-                  <label for="filterExpense-types">Type</label>
+                  <label>Type</label>
                 </td>
                 <td>
-                  <div ng-dropdown-multiselect=""
-                       id="filterExpense-types"
-                       options="types"
-                       events="typesEvents"
-                       selected-model="typesSelected"
-                       extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}">
+                  <div data-ng-dropdown-multiselect=""
+                       data-options="types"
+                       data-events="typesEvents"
+                       data-selected-model="typesSelected"
+                       data-extra-settings="{smartButtonMaxItems: 3, showCheckAll: false, showUncheckAll: false, displayProp: 'name'}">
                   </div>
                 </td>
               </tr>
@@ -202,26 +200,26 @@
         <table class="table table-striped">
           <thead>
               <tr>
-                <th ng-click="order = 'cost'; reverse = !reverse">
+                <th data-ng-click="order = 'cost'; reverse = !reverse">
                   Cost
-                  <span ng-show="order == 'cost' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
-                  <span ng-show="order == 'cost' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+                  <span data-ng-show="order == 'cost' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                  <span data-ng-show="order == 'cost' && reverse" class="glyphicon glyphicon-triangle-top"></span>
                 </th>
-                <th ng-click="order = 'date'; reverse = !reverse" class="col-date">
+                <th data-ng-click="order = 'date'; reverse = !reverse" class="col-date">
                   Date
-                  <span ng-show="order == 'date' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
-                  <span ng-show="order == 'date' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+                  <span data-ng-show="order == 'date' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                  <span data-ng-show="order == 'date' && reverse" class="glyphicon glyphicon-triangle-top"></span>
                 </th>
-                <th ng-click="order = 'description'; reverse = !reverse">
+                <th data-ng-click="order = 'description'; reverse = !reverse">
                   Description
-                  <span ng-show="order == 'description' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
-                  <span ng-show="order == 'description' && reverse" class="glyphicon glyphicon-triangle-top"></span>
+                  <span data-ng-show="order == 'description' && !reverse" class="glyphicon glyphicon-triangle-bottom"></span>
+                  <span data-ng-show="order == 'description' && reverse" class="glyphicon glyphicon-triangle-top"></span>
                 </th>
                 <th class="hidable400">Type</th>
               </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="record in records | orderBy: order: reverse " ng-click="showDetails(record)">
+            <tr data-ng-repeat="record in records | orderBy: order: reverse " data-ng-click="showDetails(record)">
               <td class="td-cost">{{record.cost | currency : "" : 0}}</td>
               <td class="col-date">{{ record.date | parseDate | date: 'MM.dd yy'}}</td>
               <td>{{record.description}}</td>
@@ -232,21 +230,17 @@
 
         <!-- modal vindow -->
 
-        <div class="my-modal ng-scope" ng-class="{'modal-visible': modalVisible, 'modal-hidden': !modalVisible}">
+        <div class="my-modal ng-scope" data-ng-class="{'modal-visible': modalVisible, 'modal-hidden': !modalVisible}">
           <div class="modal-backdrop in"></div>
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <button class="close" ng-click="modalVisible = false">×</button>
+                <button class="close" data-ng-click="modalVisible = false">×</button>
                 <h4 class="modal-title">Details</h4>
               </div>
               <div class="modal-body">
 
-                <table class="detail-table table">
-                  <colgroup>
-                   <col width="20px">
-                   <col>
-                 </colgroup>
+                <table class="detail-table single table">
                   <tr>
                     <th>Cost</th>
                     <td>{{selectedRow.cost | currency : "" : 0}}</td>
@@ -277,10 +271,10 @@
                 <table>
                   <tr>
                     <td>
-                      <button ng-click="recordDelete()" class="btn btn-default">Delete</button>
+                      <button data-ng-click="recordDelete()" class="btn btn-default">Delete</button>
                     </td>
                     <td>
-                      <button ng-click="modalVisible = false" class="btn btn-primary">Close</button>
+                      <button data-ng-click="modalVisible = false" class="btn btn-primary">Close</button>
                     </td>
                   </tr>
                 </table>

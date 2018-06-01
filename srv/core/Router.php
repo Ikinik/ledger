@@ -82,6 +82,12 @@ class Router {
 
     if($params = json_decode($requestParams, true)){
         return $params;
+
+        //html special chars xss protection
+        foreach ($params as $key => $param) {
+          $params[$key] = htmlspecialchars($param);
+        }
+
     }else{
       return [];
     }

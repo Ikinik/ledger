@@ -7,12 +7,18 @@
 
 <div data-ui-content-for="modals">
     <div class="modal modal-overlay" data-ui-default="modalWin = 1" data-ui-if="modalWin" data-ui-shared-state="modalWin">
+
+      <!-- Dialog with info message -->
+      <div id="info-box"
+           data-ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
+           <span data-ng-if="infoBox.success">Logged</span>
+           <span data-ng-if="!infoBox.success">Bad email or password :(</span>
+      </div>
+
       <div class="modal-dialog">
         <div class="modal-content">
-
           <div class="modal-body" data-ng-controller="loginCtrl">
 <!-- content body start  -->
-
 <form role="form" name="loginForm" novalidate data-ng-submit='login()'>
   <fieldset>
     <legend>Login</legend>
@@ -45,16 +51,17 @@
               <label for="login-password">Password</label>
             </td>
             <td>
+              <!--
               <span class="error-message" data-ng-show="loginForm.pass.$invalid && !loginForm.pass.$pristine">
                 We need 5 chars or more.
               </span>
+            -->
             </td>
           </tr>
         </table>
         <input id="login-password"
                name="pass"
                data-ng-model="pass"
-               data-ng-model-options="{updateOn: 'blur'}"
                type="password"
                class="form-control"
                placeholder="Password"
@@ -73,6 +80,8 @@
   <button class="btn btn-primary btn-block" data-ng-disabled="loginForm.$invalid">
     Login
   </button>
+
+  <div id="register-btn"><a href="#/register">REGISTER &gt;</a></div>
 
 </form>
 

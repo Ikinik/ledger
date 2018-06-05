@@ -2,7 +2,7 @@
   <span>Incomes</span>
 </div>
 
-<div class="scrollable site-body" data-ui-state="activeTab" data-default="2">
+<div class="scrollable site-body" data-ui-state="activeTab" data-default="1">
   <div class="scrollable-header">
     <div class="btn-group justified nav-tabs heading-tabs">
       <a data-ui-set="{'activeTab': 1}"
@@ -219,6 +219,9 @@
               </tr>
           </thead>
           <tbody>
+            <tr ng-show="!records.length" class="empty-set">
+              <td colspan="4">- No transactions available -</td>
+            </tr>
             <tr data-ng-repeat="record in records | orderBy: order: reverse " data-ng-click="showDetails(record)">
               <td class="td-cost">{{record.cost | currency : "" : 0}}</td>
               <td class="col-date">{{ record.date | parseDate | date: 'MM.dd yy'}}</td>

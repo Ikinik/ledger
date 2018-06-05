@@ -1,4 +1,6 @@
 /* eslint no-alert: 0 */
+/* CONSTANTS */
+timeHack = 7200;
 
 'use strict';
 
@@ -38,6 +40,7 @@ app.config(function($routeProvider) {
   $routeProvider.when('/claims', {templateUrl: 'claims.html', reloadOnSearch: false});
   $routeProvider.when('/config', {templateUrl: 'config.html', reloadOnSearch: false});
   $routeProvider.when('/login', {templateUrl: 'login.html', reloadOnSearch: false});
+  $routeProvider.when('/register', {templateUrl: 'register.html', reloadOnSearch: false});
 });
 
 
@@ -87,16 +90,19 @@ app.filter('joinTypes', function() {
 //
 app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieStore', function($rootScope, $scope, $cookies, $cookieStore) {
 
-  $rootScope.user = {'email': null};
+  $rootScope.user = {'email': $cookies.get('email')};
   $rootScope.infoBox = {visible: false, success: true};
 
   // Needed for the loading screen
   $rootScope.$on('$routeChangeStart', function() {
     $rootScope.loading = true;
 
-    // if user is not looget, redirect him to the login page
-    if($cookies.get('logged') != 1){
+    // if user is not looged, redirect him to the login page
+    if($cookies.get('logged') != 1 &&
+      !(window.location.hash == '#/login' || window.location.hash == '#/register')
+    ){
       window.location = './#/login';
+      console.log("redirected");
     }
   });
 
@@ -113,6 +119,7 @@ app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieSto
     if(confirm("Do you want to really logout ?")){
         $cookies.remove("PHPSESSID");
         $cookies.remove("logged");
+        $cookies.remove("email");
         window.location = './#/login';
     }
   };
@@ -121,17 +128,38 @@ app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieSto
 
 
 //controllers
-app.controller('loginCtrl', function($rootScope, $scope, $http){
+app.controller('loginCtrl', function($rootScope, $scope, $http, $timeout, $cookies, $cookieStore){
   $scope.login = function(){
       //window.alert("user: " + $scope.email + " " + $scope.password + " " + $scope.rememberMe);
       $http.post('srv/loader.php?requri=login', {'email': $scope.email, 'pass': $scope.pass})
            .then(function successfulLogin(response){
-             $rootScope.user = {'email': $scope.email}
+             $rootScope.user = {'email': $scope.email};
+             $cookies.put('email', $scope.email);
              window.location = './#/';
 
            }, function failedLogin(response){
-             //console.log('Unauthorized');
-             //console.log(response);
+             $rootScope.infoBox = {visible: true, success: false};
+             $timeout(function(){
+               $rootScope.infoBox = {visible: false, success: false};
+             }, 1800);
+           });
+  };
+});
+
+app.controller('registerCtrl', function($rootScope, $scope, $http, $timeout){
+  $scope.login = function(){
+      //window.alert("user: " + $scope.email + " " + $scope.password + " " + $scope.rememberMe);
+      $http.post('srv/loader.php?requri=login/register', {'email': $scope.email, 'pass': $scope.pass, 'invitation': $scope.invitation})
+           .then(function successfulLogin(response){
+             $rootScope.user = {'email': $scope.email};
+             $cookies.put('email', $scope.email);
+             window.location = './#/';
+           }, function failedLogin(response){
+             console.log(response);
+             $rootScope.infoBox = {visible: true, success: false, message: response.data.message};
+             $timeout(function(){
+               $rootScope.infoBox = {visible: false, success: false};
+             }, 1800);
            });
   };
 });
@@ -150,9 +178,8 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
   $scope.addExpense = function(){
 
     function postExpenseData(data){
-      var date = new Date(data.date);
-      data.date = date.getTime();
-
+      // var date = new Date(data.date);
+      data.date = Math.round(new Date(data.date).getTime()/1000) + timeHack;
       console.log(data.date);
 
       $http.post('srv/loader.php?requri=expenses', data)
@@ -185,7 +212,7 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
             'cost': $scope.cost,
             'types': $scope.typesSelected,
             'description': $scope.description,
-            'date': ($scope.date / 1000),
+            'date': ($scope.date),
             'location': {
                 'latitude': position.coords.latitude,
                 'longitude': position.coords.longitude,
@@ -199,7 +226,7 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
         'cost': $scope.cost,
         'types': $scope.typesSelected,
         'description': $scope.description,
-        'date': ($scope.date / 1000)
+        'date': ($scope.date)
       });
     }
   };
@@ -223,7 +250,7 @@ app.controller('addLongTermExpenseCtrl', function($rootScope, $scope, $http, $ti
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (date.getTime() / 1000)
+      'date': (Math.round(date.getTime()/1000) + timeHack)
     }
 
     $http.post('srv/loader.php?requri=long-term-expenses', data)
@@ -269,7 +296,7 @@ app.controller('addIncomeCtrl', function($rootScope, $scope, $http, $timeout){
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (date.getTime() / 1000)
+      'date': (Math.round(date.getTime()/1000) + timeHack)
     }
 
     $http.post('srv/loader.php?requri=incomes', data)
@@ -333,8 +360,8 @@ app.controller('addDebtCtrl', function($rootScope, $scope, $http, $timeout){
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (date.getTime() / 1000),
-      'dueDate': (dueDate.getTime() / 1000)
+      'date': (Math.round(date.getTime()/1000) + timeHack),
+      'dueDate': (Math.round(dueDate.getTime()/1000) + timeHack)
     }
 
     $http.post('srv/loader.php?requri=debts', data)
@@ -399,8 +426,8 @@ app.controller('addClaimCtrl', function($rootScope, $scope, $http, $timeout){
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (date.getTime() / 1000),
-      'dueDate': (dueDate.getTime() / 1000)
+      'date': (Math.round(date.getTime()/1000) + timeHack),
+      'dueDate': (Math.round(dueDate.getTime()/1000) + timeHack)
     }
 
     $http.post('srv/loader.php?requri=claims', data)

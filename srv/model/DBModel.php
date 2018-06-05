@@ -53,6 +53,39 @@ class DBModel {
     }
   }
 
+  public function registerUser(string $email, string $password){
+
+    $stUserExists = $this->db->prepare("SELECT id FROM ledger.users WHERE users.email = ? LIMIT 1");
+    $stAddUser = $this->db->prepare("INSERT INTO ledger.users (`password`, `email`) VALUES (?, ?)");
+
+    try {
+      $this->db->beginTransaction();
+
+      $stUserExists->execute([$email]);
+      if($stUserExists->rowCount() == 1){
+        throw new \Exception('User already exist', 409);
+      }
+
+      $hash = password_hash($password, PASSWORD_BCRYPT);
+      $stAddUser->execute([$hash, $email]);
+      $userID = $this->db->lastInsertId();
+
+      $this->db->commit();
+    } catch (PDOException $e) {
+      $this->db->rollBack();
+      throw new \Exception('Something went wrong', 400);
+    }
+
+    $this->addType($userID, 'other', [true, true, true, true, true]);
+    $this->addType($userID, 'waste', [true, true, false, false, false]);
+    $this->addType($userID, 'fuel', [true, true, false, false, false]);
+    $this->addType($userID, 'fun', [true, true, false, false, false]);
+    $this->addType($userID, 'food', [true, true, false, false, false]);
+    $this->addType($userID, 'rent', [false, true, true, true, true]);
+
+    return $userID;
+  }
+
   /* DEPRECATED - NOT IN USE */
   public function getTypesForMoveType(int $userID,int $moveID){
     $st = $this->db->prepare("SELECT types.id, types.name
@@ -341,7 +374,7 @@ class DBModel {
       $stRename->execute([$typeName, $userID, $typeID]);
       $stDeleteOps->execute([$typeID]);
 
-      foreach ($forType as $i => $selected) {
+      foreach ($forType as $i => $selected) {$typeID = $this->db->lastInsertId();
         $operationID = $i + 1;
 
         if($selected){

@@ -12,6 +12,7 @@ class Router {
   private function __construct(){
     $this->routes['/'] = 'LoginCtrl';
     $this->routes['login'] = 'LoginCtrl';
+    $this->routes['login/register'] = 'LoginCtrl/register';
 
     $this->routes['expenses'] = 'ExpensesCtrl';
     $this->routes['expenses/types'] = 'ExpensesCtrl/getTypes';

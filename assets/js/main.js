@@ -84,8 +84,52 @@ app.filter('joinTypes', function() {
     };
 });
 
+//DIRECTIVES
+
+app.directive('googleSignInButton',function($http, $rootScope, $cookies, $timeout){
+    return {
+        scope:{
+            gClientId:'@',
+            callback: '&onSignIn'
+        },
+        template: '<div class="btn btn-default" ng-click="onSignInButtonClick()"><span class="fa fa-google"></span> Sign in</div>',
+        controller: ['$scope','$attrs',function($scope, $attrs){
+            gapi.load('auth2', function() {//load in the auth2 api's, without it gapi.auth2 will be undefined
+                gapi.auth2.init(
+                        {
+                            client_id: $attrs.gClientId
+                        }
+                );
+                var GoogleAuth  = gapi.auth2.getAuthInstance();//get's a GoogleAuth instance with your client-id, needs to be called after gapi.auth2.init
+                $scope.onSignInButtonClick=function(){//add a function to the controller so ng-click can bind to it
+                    GoogleAuth.signIn().then(function(response){//request to sign in
+                        $scope.callback({response:response});
+
+                        var profile = response.getBasicProfile();
+                        var id_token = response.getAuthResponse().id_token;
+
+                        $http.post('srv/loader.php?requri=login/goauth', {'AuthID': id_token})
+                             .then(function successfulLogin(response){
+                               $rootScope.user = {'email': profile.getEmail()};
+                               $cookies.put('email', profile.getEmail());
+                               window.location = './#/';
+
+                             }, function failedLogin(response){
+                               $rootScope.infoBox = {visible: true, success: false};
+                               $timeout(function(){
+                                 $rootScope.infoBox = {visible: false, success: false};
+                               }, 1800);
+                             });
+
+                    });
+                };
+            });
+        }]
+    };
+});
+
 //
-// For this trivial demo we have just a unique MainController
+// For this app there is just one unique MainController
 // for everything
 //
 app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieStore', function($rootScope, $scope, $cookies, $cookieStore) {
@@ -120,6 +164,15 @@ app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieSto
         $cookies.remove("PHPSESSID");
         $cookies.remove("logged");
         $cookies.remove("email");
+
+        if($cookies.get("loggedGoogle") == 1){
+          $cookies.remove("loggedGoogle");
+          var auth2 = gapi.auth2.getAuthInstance();
+          auth2.signOut().then(function () {
+            console.log('User signed out.');
+          });
+        }
+
         window.location = './#/login';
     }
   };

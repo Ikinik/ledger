@@ -86,6 +86,17 @@ class DBModel {
     return $userID;
   }
 
+  public function emailExist(string $email){
+    $st = $this->db->prepare("SELECT id FROM ledger.users WHERE users.email = ? LIMIT 1");
+    $st->execute([$email]);
+
+    if($st->rowCount() != 1){
+      return false;
+    }
+    $result = $st->fetch(\PDO::FETCH_ASSOC);
+    return $result['id'];
+  }
+
   /* DEPRECATED - NOT IN USE */
   public function getTypesForMoveType(int $userID,int $moveID){
     $st = $this->db->prepare("SELECT types.id, types.name

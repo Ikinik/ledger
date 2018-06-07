@@ -35,6 +35,9 @@ a#logout {font-size: 18px; top: 4px; display: inline-block}
 div#register-btn {text-align: right; padding-top: 14px}
 div#register-btn a {font-size: 14px; text-decoration: underline}
 
+table#login-sw {width: 100%}
+table#login-sw tr th:last-of-type {width: 75px}
+
 #info-box {overflow-y: hidden;
            max-height: 0px;
 

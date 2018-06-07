@@ -12,7 +12,7 @@
       <div id="info-box"
            data-ng-class="{success: infoBox.success, error: !infoBox.success, visible: infoBox.visible}">
            <span data-ng-if="infoBox.success">Logged</span>
-           <span data-ng-if="!infoBox.success">Bad email or password :(</span>
+           <span data-ng-if="!infoBox.success">Account is not valid :(</span>
       </div>
 
       <div class="modal-dialog">
@@ -69,11 +69,24 @@
                required>
       </div>
 
-      <div class="form-group">
-        <label>Remember Me</label>
-        <ui-switch data-ng-model="rememberMe">
-        </ui-switch>
-      </div>
+      <table id="login-sw">
+        <thead>
+          <tr>
+            <th><label>Remember Me</label></th>
+            <th><label>Via Google</label></th>
+          </tr>
+        </thead>
+        <tr>
+          <td>
+              <ui-switch data-ng-model="rememberMe"></ui-switch>
+          </td>
+          <td>
+            <div data-google-sign-in-button data-on-sign-in="onSignIn(response)" data-g-client-id="1023295798084-ug24ckfufj6gv847qen2lgoqk9hp89cj.apps.googleusercontent.com"></div>
+          </td>
+        </tr>
+      </table>
+
+
   </fieldset>
   <hr>
 

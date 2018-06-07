@@ -13,7 +13,9 @@ class Router {
     $this->routes['/'] = 'LoginCtrl';
     $this->routes['login'] = 'LoginCtrl';
     $this->routes['login/register'] = 'LoginCtrl/register';
-
+    $this->routes['login/register'] = 'LoginCtrl/register';
+    $this->routes['login/goauth'] = 'LoginCtrl/loginGoogleOAuth';
+    
     $this->routes['expenses'] = 'ExpensesCtrl';
     $this->routes['expenses/types'] = 'ExpensesCtrl/getTypes';
     $this->routes['expenses/view'] = 'ExpensesCtrl/getExpenses';

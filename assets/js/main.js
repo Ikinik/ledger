@@ -175,6 +175,7 @@ app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieSto
         $cookies.remove("PHPSESSID");
         $cookies.remove("logged");
         $cookies.remove("email");
+        window.location = './#/login';
 
         if($cookies.get("loggedGoogle") == 1){
           $cookies.remove("loggedGoogle");
@@ -183,8 +184,6 @@ app.controller('MainController', ['$rootScope', '$scope', '$cookies','$cookieSto
             console.log('User signed out.');
           });
         }
-
-        window.location = './#/login';
     }
   };
 

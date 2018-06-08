@@ -385,9 +385,8 @@ class DBModel {
       $stRename->execute([$typeName, $userID, $typeID]);
       $stDeleteOps->execute([$typeID]);
 
-      foreach ($forType as $i => $selected) {$typeID = $this->db->lastInsertId();
+      foreach ($forType as $i => $selected) {
         $operationID = $i + 1;
-
         if($selected){
             $toInsert->execute([$operationID, $typeID]);
         }

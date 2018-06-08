@@ -144,7 +144,7 @@ form.filterForm fieldset div.form-body.form-body-visible {display: none}
 
 form[name="typesConfigForm"] legend {width: 70px}
 
-table#settings {margin-top: -50px; width: 100%}
+table#settings {margin-top: -50px; width: 100%; max-width: 350px}
 table#settings th {vertical-align: bottom; text-align: left; padding-bottom: 0.5em}
 table#settings th.rotate {height: 95px; white-space: nowrap; background-color: white}
 table#settings th.rotate div {transform: translate(0px, -10px) rotate(320deg);

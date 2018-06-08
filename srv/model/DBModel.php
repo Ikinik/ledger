@@ -136,7 +136,7 @@ class DBModel {
 
   private function insertMove(int $operationID, int $userID, int $cost, array $types, $description, $date, $dueDate = null){
     $moveSt = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`, `due_date`)
-                              VALUES (?, ?, ?, ?, FROM_UNIXTIME(?), FROM_UNIXTIME(?))");
+                              VALUES (?, ?, ?, ?, ?, ?)");
 
     $typeToMoveST = $this->db->prepare("INSERT INTO ledger.types_moves (`type_id`, `move_id`) VALUES (?, ?)");
 
@@ -164,7 +164,7 @@ class DBModel {
                                VALUES (?,?,?)");
 
     $moveSt = $this->db->prepare("INSERT INTO ledger.moves (`operation_id`, `user_id`, `cost`, `description`, `date`, `point_id`)
-                             VALUES (?, ?, ?, ?, FROM_UNIXTIME(?), ?)");
+                             VALUES (?, ?, ?, ?, ?, ?)");
 
     $typeToMoveST = $this->db->prepare("INSERT INTO ledger.types_moves (`type_id`, `move_id`) VALUES (?, ?)");
 
@@ -214,11 +214,11 @@ class DBModel {
   public function getExpenses(int $userID, $dateTo = null, $dateFrom = null){
     if($dateTo && $dateFrom){
       $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
-                                FROM ledger.expenses where ledger.expenses.user_id = ? AND expenses.date <= FROM_UNIXTIME(?) AND expenses.date >= FROM_UNIXTIME(?) ORDER BY expenses.date LIMIT 500");
+                                FROM ledger.expenses where ledger.expenses.user_id = ? AND expenses.date <= ? AND expenses.date >= ? ORDER BY expenses.date LIMIT 500");
       $st->execute([$userID, $dateTo, $dateFrom]);
     }else if($dateTo){
       $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
-                                FROM ledger.expenses where ledger.expenses.user_id = ? AND expenses.date <= FROM_UNIXTIME(?) ORDER BY expenses.date LIMIT 500");
+                                FROM ledger.expenses where ledger.expenses.user_id = ? AND expenses.date <= ? ORDER BY expenses.date LIMIT 500");
       $st->execute([$userID, $dateTo]);
     }else {
       $st = $this->db->prepare("SELECT expenses.id, expenses.cost, expenses.description, expenses.date, expenses.lat, expenses.long, expenses.alt, expenses.created, expenses.types
@@ -238,11 +238,11 @@ class DBModel {
   public function getLongTermExpenses(int $userID, $dateTo = null, $dateFrom = null){
     if($dateTo && $dateFrom){
       $st = $this->db->prepare("SELECT long_term_expenses.id, long_term_expenses.cost, long_term_expenses.description, long_term_expenses.date, long_term_expenses.created, long_term_expenses.types
-                                FROM ledger.long_term_expenses where ledger.long_term_expenses.user_id = ? AND long_term_expenses.date <= FROM_UNIXTIME(?) AND long_term_expenses.date >= FROM_UNIXTIME(?) ORDER BY long_term_expenses.date LIMIT 500");
+                                FROM ledger.long_term_expenses where ledger.long_term_expenses.user_id = ? AND long_term_expenses.date <= ? AND long_term_expenses.date >= ? ORDER BY long_term_expenses.date LIMIT 500");
       $st->execute([$userID, $dateTo, $dateFrom]);
     }else if($dateTo){
       $st = $this->db->prepare("SELECT long_term_expenses.id, long_term_expenses.cost, long_term_expenses.description, long_term_expenses.date, long_term_expenses.created, long_term_expenses.types
-                                FROM ledger.long_term_expenses where ledger.long_term_expenses.user_id = ? AND long_term_expenses.date <= FROM_UNIXTIME(?) ORDER BY long_term_expenses.date LIMIT 500");
+                                FROM ledger.long_term_expenses where ledger.long_term_expenses.user_id = ? AND long_term_expenses.date <= ? ORDER BY long_term_expenses.date LIMIT 500");
       $st->execute([$userID, $dateTo]);
     }else {
       $st = $this->db->prepare("SELECT long_term_expenses.id, long_term_expenses.cost, long_term_expenses.description, long_term_expenses.date, long_term_expenses.created, long_term_expenses.types
@@ -262,11 +262,11 @@ class DBModel {
   public function getIncomes(int $userID, $dateTo = null, $dateFrom = null){
     if($dateTo && $dateFrom){
       $st = $this->db->prepare("SELECT incomes.id, incomes.cost, incomes.description, incomes.date, incomes.created, incomes.types
-                                FROM ledger.incomes where ledger.incomes.user_id = ? AND incomes.date <= FROM_UNIXTIME(?) AND incomes.date >= FROM_UNIXTIME(?) ORDER BY incomes.date LIMIT 500");
+                                FROM ledger.incomes where ledger.incomes.user_id = ? AND incomes.date <= ? AND incomes.date >= ? ORDER BY incomes.date LIMIT 500");
       $st->execute([$userID, $dateTo, $dateFrom]);
     }else if($dateTo){
       $st = $this->db->prepare("SELECT incomes.id, incomes.cost, incomes.description, incomes.date, incomes.created, incomes.types
-                                FROM ledger.incomes where ledger.incomes.user_id = ? AND incomes.date <= FROM_UNIXTIME(?) ORDER BY incomes.date LIMIT 500");
+                                FROM ledger.incomes where ledger.incomes.user_id = ? AND incomes.date <= ? ORDER BY incomes.date LIMIT 500");
       $st->execute([$userID, $dateTo]);
     }else {
       $st = $this->db->prepare("SELECT incomes.id, incomes.cost, incomes.description, incomes.date, incomes.created, incomes.types
@@ -286,11 +286,11 @@ class DBModel {
   public function getDebts(int $userID, $dateTo = null, $dateFrom = null){
     if($dateTo && $dateFrom){
       $st = $this->db->prepare("SELECT debts.id, debts.cost, debts.description, debts.date, debts.due_date, debts.created, debts.types
-                                FROM ledger.debts where ledger.debts.user_id = ? AND debts.date <= FROM_UNIXTIME(?) AND debts.date >= FROM_UNIXTIME(?) ORDER BY debts.date LIMIT 500");
+                                FROM ledger.debts where ledger.debts.user_id = ? AND debts.date <= ? AND debts.date >= ? ORDER BY debts.date LIMIT 500");
       $st->execute([$userID, $dateTo, $dateFrom]);
     }else if($dateTo){
       $st = $this->db->prepare("SELECT debts.id, debts.cost, debts.description, debts.date, debts.due_date, debts.created, debts.types
-                                FROM ledger.debts where ledger.debts.user_id = ? AND debts.date <= FROM_UNIXTIME(?) ORDER BY debts.date LIMIT 500");
+                                FROM ledger.debts where ledger.debts.user_id = ? AND debts.date <= ? ORDER BY debts.date LIMIT 500");
       $st->execute([$userID, $dateTo]);
     }else {
       $st = $this->db->prepare("SELECT debts.id, debts.cost, debts.description, debts.date, debts.due_date, debts.created, debts.types
@@ -310,11 +310,11 @@ class DBModel {
   public function getClaims(int $userID, $dateTo = null, $dateFrom = null){
     if($dateTo && $dateFrom){
       $st = $this->db->prepare("SELECT claims.id, claims.cost, claims.description, claims.date, claims.due_date, claims.created, claims.types
-                                FROM ledger.claims where ledger.claims.user_id = ? AND claims.date <= FROM_UNIXTIME(?) AND claims.date >= FROM_UNIXTIME(?) ORDER BY claims.date LIMIT 500");
+                                FROM ledger.claims where ledger.claims.user_id = ? AND claims.date <= ? AND claims.date >= ? ORDER BY claims.date LIMIT 500");
       $st->execute([$userID, $dateTo, $dateFrom]);
     }else if($dateTo){
       $st = $this->db->prepare("SELECT claims.id, claims.cost, claims.description, claims.date, claims.due_date, claims.created, claims.types
-                                FROM ledger.claims where ledger.claims.user_id = ? AND claims.date <= FROM_UNIXTIME(?) ORDER BY claims.date LIMIT 500");
+                                FROM ledger.claims where ledger.claims.user_id = ? AND claims.date <= ? ORDER BY claims.date LIMIT 500");
       $st->execute([$userID, $dateTo]);
     }else {
       $st = $this->db->prepare("SELECT claims.id, claims.cost, claims.description, claims.date, claims.due_date, claims.created, claims.types

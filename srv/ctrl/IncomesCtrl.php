@@ -32,7 +32,7 @@ class IncomesCtrl extends AbstractAuthCtrl {
       }
 
       if(isset($this->post['date']) && $this->post['date'] != 0){
-          $date = (int)$this->post['date'];
+          $date = $this->post['date'];
       }
 
       if(isset($this->post['types'])){
@@ -64,11 +64,11 @@ class IncomesCtrl extends AbstractAuthCtrl {
 
       if(isset($this->get['date-to'])){
         if(!empty($this->get['date-to'])){
-          $dateTo = (int)$this->get['date-to'];
+          $dateTo = $this->get['date-to'];
 
           if(isset($this->get['date-from'])){
             if(!empty($this->get['date-from'])){
-              $dateFrom = (int)$this->get['date-from'];
+              $dateFrom = $this->get['date-from'];
 
               if($dateFrom > $dateTo){
                   throw new \Exception('', 400); //bad request

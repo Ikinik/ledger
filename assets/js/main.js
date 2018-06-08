@@ -1,8 +1,20 @@
 /* eslint no-alert: 0 */
-/* CONSTANTS */
-timeHack = 7200;
-
 'use strict';
+
+//prototypes
+Date.prototype.toYMD = function Date_toYMD() {
+    var year, month, day;
+    year = String(this.getFullYear());
+    month = String(this.getMonth() + 1);
+    if (month.length == 1) {
+        month = "0" + month;
+    }
+    day = String(this.getDate());
+    if (day.length == 1) {
+        day = "0" + day;
+    }
+    return year + "-" + month + "-" + day;
+};
 
 //
 // Here is how to define your module
@@ -56,8 +68,7 @@ app.filter('parseDateLimitForm', function(){
   return function(dateString){
     if(dateString){
         var selDate = new Date(dateString);
-        selDate.setDate(selDate.getDate() + 1);
-        return selDate.toISOString().slice(0,10);
+        return selDate.toYMD();
     }else{
         return dateString;
     }
@@ -231,9 +242,8 @@ app.controller('addExpenseCtrl', function($rootScope, $scope, $http, $timeout){
   $scope.addExpense = function(){
 
     function postExpenseData(data){
-      // var date = new Date(data.date);
-      data.date = Math.round(new Date(data.date).getTime()/1000) + timeHack;
-      console.log(data.date);
+
+      data.date = (data.date)? new Date(data.date).toYMD() : new Date().toYMD();
 
       $http.post('srv/loader.php?requri=expenses', data)
            .then(function(response){
@@ -297,13 +307,15 @@ app.controller('addLongTermExpenseCtrl', function($rootScope, $scope, $http, $ti
 
   $scope.addLongTermExpense = function(){
 
-    var date = new Date($scope.date);
+    //var date = new Date($scope.date);
+    var date = ($scope.date)? new Date($scope.date).toYMD() : new Date().toYMD();
+    console.log(date);
 
     var data = {
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (Math.round(date.getTime()/1000) + timeHack)
+      'date': date
     }
 
     $http.post('srv/loader.php?requri=long-term-expenses', data)
@@ -343,13 +355,14 @@ app.controller('addIncomeCtrl', function($rootScope, $scope, $http, $timeout){
 
   $scope.addIncome = function(){
 
-    var date = new Date($scope.date);
+    //var date = new Date($scope.date);
+    var date = ($scope.date)? new Date($scope.date).toYMD() : new Date().toYMD();
 
     var data = {
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (Math.round(date.getTime()/1000) + timeHack)
+      'date': date
     }
 
     $http.post('srv/loader.php?requri=incomes', data)
@@ -406,15 +419,15 @@ app.controller('addDebtCtrl', function($rootScope, $scope, $http, $timeout){
 
   $scope.addDebt = function(){
 
-    var date = new Date($scope.date);
-    var dueDate = new Date($scope.dueDate);
+    var date = ($scope.date)? new Date($scope.date).toYMD() : new Date().toYMD();
+    var dueDate = ($scope.dueDate)? new Date($scope.dueDate).toYMD() : null;
 
     var data = {
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (Math.round(date.getTime()/1000) + timeHack),
-      'dueDate': (Math.round(dueDate.getTime()/1000) + timeHack)
+      'date': date,
+      'dueDate': dueDate
     }
 
     $http.post('srv/loader.php?requri=debts', data)
@@ -472,15 +485,15 @@ app.controller('addClaimCtrl', function($rootScope, $scope, $http, $timeout){
 
   $scope.addClaim = function(){
 
-    var date = new Date($scope.date);
-    var dueDate = new Date($scope.dueDate);
+    var date = ($scope.date)? new Date($scope.date).toYMD() : new Date().toYMD();
+    var dueDate = ($scope.dueDate)? new Date($scope.dueDate).toYMD() : null;
 
     var data = {
       'cost': $scope.cost,
       'types': $scope.typesSelected,
       'description': $scope.description,
-      'date': (Math.round(date.getTime()/1000) + timeHack),
-      'dueDate': (Math.round(dueDate.getTime()/1000) + timeHack)
+      'date': date,
+      'dueDate': dueDate
     }
 
     $http.post('srv/loader.php?requri=claims', data)
@@ -592,8 +605,8 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
       $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", true);
 
       var data = {
-        'date-from': ($scope.dateFrom)? (dateFrom.getTime() / 1000) : null,
-        'date-to': (dateTo.getTime() / 1000)
+        'date-from': ($scope.dateFrom)? dateFrom.toYMD() : null,
+        'date-to': dateTo.toYMD()
       };
 
       $http.get('srv/loader.php?requri=expenses/view', {'params': data})
@@ -616,9 +629,7 @@ app.controller('viewExpensesCtrl', function($rootScope, $scope, $http){
         });
 
     $scope.loadResults();
-
-    var todayDate = new Date();
-    $scope.todayDate = todayDate.toISOString().slice(0,10);
+    $scope.dateTo = new Date();
 
 });
 
@@ -705,8 +716,8 @@ app.controller('viewLongTermExpensesCtrl', function($rootScope, $scope, $http){
       $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", true);
 
       var data = {
-        'date-from': ($scope.dateFrom)? (dateFrom.getTime() / 1000) : null,
-        'date-to': (dateTo.getTime() / 1000)
+        'date-from': ($scope.dateFrom)? dateFrom.toYMD() : null,
+        'date-to': dateTo.toYMD()
       };
 
       $http.get('srv/loader.php?requri=long-term-expenses/view', {'params': data})
@@ -729,9 +740,7 @@ app.controller('viewLongTermExpensesCtrl', function($rootScope, $scope, $http){
         });
 
     $scope.loadResults();
-
-    var todayDate = new Date();
-    $scope.todayDate = todayDate.toISOString().slice(0,10);
+    $scope.dateTo = new Date();
 
 });
 
@@ -818,8 +827,8 @@ app.controller('viewIncomesCtrl', function($rootScope, $scope, $http){
       $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", true);
 
       var data = {
-        'date-from': ($scope.dateFrom)? (dateFrom.getTime() / 1000) : null,
-        'date-to': (dateTo.getTime() / 1000)
+        'date-from': ($scope.dateFrom)? dateFrom.toYMD() : null,
+        'date-to': dateTo.toYMD()
       };
 
       $http.get('srv/loader.php?requri=incomes/view', {'params': data})
@@ -842,9 +851,7 @@ app.controller('viewIncomesCtrl', function($rootScope, $scope, $http){
         });
 
     $scope.loadResults();
-
-    var todayDate = new Date();
-    $scope.todayDate = todayDate.toISOString().slice(0,10);
+    $scope.dateTo = new Date();
 
 });
 
@@ -931,8 +938,8 @@ app.controller('viewDebtsCtrl', function($rootScope, $scope, $http){
       $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", true);
 
       var data = {
-        'date-from': ($scope.dateFrom)? (dateFrom.getTime() / 1000) : null,
-        'date-to': (dateTo.getTime() / 1000)
+        'date-from': ($scope.dateFrom)? dateFrom.toYMD() : null,
+        'date-to': dateTo.toYMD()
       };
 
       $http.get('srv/loader.php?requri=debts/view', {'params': data})
@@ -955,9 +962,7 @@ app.controller('viewDebtsCtrl', function($rootScope, $scope, $http){
         });
 
     $scope.loadResults();
-
-    var todayDate = new Date();
-    $scope.todayDate = todayDate.toISOString().slice(0,10);
+    $scope.dateTo = new Date();
 
 });
 
@@ -1044,8 +1049,8 @@ app.controller('viewClaimsCtrl', function($rootScope, $scope, $http){
       $scope.sortExpenseForm.dateFrom.$setValidity("dateToGrDateFrom", true);
 
       var data = {
-        'date-from': ($scope.dateFrom)? (dateFrom.getTime() / 1000) : null,
-        'date-to': (dateTo.getTime() / 1000)
+        'date-from': ($scope.dateFrom)? dateFrom.toYMD() : null,
+        'date-to': dateTo.toYMD()
       };
 
       $http.get('srv/loader.php?requri=claims/view', {'params': data})
@@ -1068,9 +1073,7 @@ app.controller('viewClaimsCtrl', function($rootScope, $scope, $http){
         });
 
     $scope.loadResults();
-
-    var todayDate = new Date();
-    $scope.todayDate = todayDate.toISOString().slice(0,10);
+    $scope.dateTo = new Date();
 
 });
 
